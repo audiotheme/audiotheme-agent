@@ -1,0 +1,6 @@
+.DS_Store
+dist/
+languages/audiotheme-agent.pot
+node_modules/
+phpcs.log
+vendor/

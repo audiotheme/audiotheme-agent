@@ -1,0 +1,29 @@
+{
+  "name": "audiotheme/audiotheme-agent",
+  "description": "A WordPress plugin for priority support and automatic updates for AudioTheme.com premium themes and plugins.",
+  "keywords": [
+    "wordpress"
+  ],
+  "homepage": "https://audiotheme.com/",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "AudioTheme",
+      "email": "support@audiotheme.com",
+      "homepage": "https://audiotheme.com/"
+    }
+  ],
+  "type": "wordpress-plugin",
+  "support": {
+    "issues": "https://github.com/audiotheme/audiotheme-agent/issues",
+    "source": "https://github.com/audiotheme/audiotheme-agent"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*@stable"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AudioTheme\\Agent\\": "tests/phpunit/"
+    }
+  }
+}
