@@ -149,7 +149,7 @@ abstract class AudioTheme_Agent_AbstractPlugin {
 	 * @return string
 	 */
 	public function get_slug() {
-		return $this->directory;
+		return $this->slug;
 	}
 
 	/**
