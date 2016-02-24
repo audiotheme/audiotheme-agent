@@ -168,9 +168,8 @@ class AudioTheme_Agent_Client {
 		}
 
 		$args = wp_parse_args( $args, array(
-			'headers'   => array(),
-			'method'    => $method,
-			'sslverify' => false,
+			'headers' => array(),
+			'method'  => $method,
 		) );
 
 		if ( $this->is_authorized() ) {
@@ -582,7 +581,6 @@ class AudioTheme_Agent_Client {
 				'Authorization' => sprintf( 'Bearer %s', $token ),
 				'Content-Type'  => 'application/json',
 			),
-			'sslverify' => false,
 		) );
 
 		$data = $this->parse_response( $response, 201 );
@@ -630,7 +628,6 @@ class AudioTheme_Agent_Client {
 				'Authorization' => sprintf( 'Bearer %s', $token ),
 				'Content-Type'  => 'application/json',
 			),
-			'sslverify' => false,
 		) );
 
 		$data = $this->parse_response( $response, array( 200, 201 ) );
@@ -712,7 +709,6 @@ class AudioTheme_Agent_Client {
 				),
 				'Content-Type'  => 'application/x-www-form-urlencoded',
 			),
-			'sslverify' => false,
 		) );
 
 		$token = $this->save_token( $this->parse_response( $response ) );
