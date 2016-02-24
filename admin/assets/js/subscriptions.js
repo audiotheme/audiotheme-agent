@@ -86,9 +86,9 @@
 		},
 
 		render: function() {
-			this.$button = this.$el.find( '.button' );
-			this.$feedback = this.$el.find( '.audiotheme-agent-subscription-token-group-feedback' );
-			this.$field = this.$el.find( 'input' );
+			this.$button = this.$( '.button' );
+			this.$feedback = this.$( '.audiotheme-agent-subscription-token-group-feedback' );
+			this.$field = this.$( 'input' );
 			this.$spinner = $( '<span class="spinner"></span>' ).insertAfter( this.$button );
 
 			this.toggleButton();
@@ -111,6 +111,7 @@
 				.subscribe( this.$field.val() )
 				.done(function() {
 					view.$field.val( '' );
+					view.$feedback.hide().text( '' );
 				})
 				.fail(function( response ) {
 					if ( 'message' in response ) {
@@ -138,7 +139,7 @@
 		render: function() {
 			var subscriptions = this.controller.get( 'subscriptions' );
 
-			this.$tbody = this.$el.find( 'tbody' );
+			this.$tbody = this.$( 'tbody' );
 
 			if ( subscriptions.length ) {
 				this.$tbody.html( '' );
@@ -182,11 +183,11 @@
 		disconnect: function( e ) {
 			e.preventDefault();
 			this.model.disconnect();
-		},
+		}/*,
 
 		remove: function() {
 			this.$el.remove();
-		}
+		}*/
 	});
 
 	/**
@@ -200,12 +201,12 @@
 	});
 
 	new app.view.TokenGroup({
-		el: $( '.audiotheme-agent-subscription-token-group' ).get( 0 ),
+		el: $( '.audiotheme-agent-subscription-token-group' ),
 		controller: controller
 	}).render();
 
 	new app.view.SubscriptionsTable({
-		el: $( '.audiotheme-agent-subscriptions' ).get( 0 ),
+		el: $( '.audiotheme-agent-subscriptions' ),
 		controller: controller
 	}).render();
 

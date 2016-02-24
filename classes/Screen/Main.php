@@ -59,13 +59,13 @@ class AudioTheme_Agent_Screen_Main extends AudioTheme_Agent_AbstractProvider {
 			true
 		);
 
-		wp_localize_script( 'audiotheme-agent-subscriptions', '_audiothemeAgentSettings', [
+		wp_localize_script( 'audiotheme-agent-subscriptions', '_audiothemeAgentSettings', array(
 			'nonces'        => array(
 				'disconnect' => wp_create_nonce( 'disconnect-subscription' ),
 				'subscribe'  => wp_create_nonce( 'subscribe' ),
 			),
 			'subscriptions' => $this->get_subscriptions(),
-		] );
+		) );
 	}
 
 	/**
