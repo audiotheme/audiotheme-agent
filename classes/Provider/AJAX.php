@@ -33,7 +33,7 @@ class AudioTheme_Agent_Provider_AJAX extends AudioTheme_Agent_AbstractProvider {
 	public function subscribe() {
 		$token = sanitize_text_field( $_POST['token'] );
 
-		if ( ! isset( $_POST['nonce'] ) && wp_verify_nonce( $_POST['nonce'], 'subscribe' ) ) {
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'subscribe' ) ) {
 			wp_send_json_error( array(
 				'message' => esc_html__( 'Unauthorized request.', 'audiotheme-agent' )
 			) );
