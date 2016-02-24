@@ -333,7 +333,7 @@ class AudioTheme_Agent_PackageManager extends AudioTheme_Agent_AbstractProvider 
 
 			// Add the package zip URL if available.
 			if ( ! empty( $package->package ) ) {
-				$updates[ $basename ]['package'] = $package->package;
+				$updates[ $basename ]->package = $package->package;
 			}
 		}
 
