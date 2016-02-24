@@ -272,7 +272,7 @@ class AudioTheme_Agent_Client {
 	 *
 	 * @return $this
 	 */
-	public function deauthorize() {
+	public function disconnect() {
 		// @todo Revoke the token remotely.
 		delete_option( 'audiotheme_agent_token' );
 		return $this;
