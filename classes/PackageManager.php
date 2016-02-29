@@ -217,8 +217,8 @@ class AudioTheme_Agent_PackageManager extends AudioTheme_Agent_AbstractProvider 
 	 * @return array
 	 */
 	public function get_installed_packages() {
-		$plugins  = $this->get_installed_plugins();
-		$themes   = $this->get_installed_themes();
+		$plugins = $this->get_installed_plugins();
+		$themes  = $this->get_installed_themes();
 
 		$packages = array_merge( $plugins, $themes );
 		ksort( $packages );

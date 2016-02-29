@@ -17,7 +17,7 @@
 					<?php
 					printf(
 						wp_kses(
-							__( 'Enter a subscription access token from your <a href="%s" target="_blank">dashboard on AudioTheme.com</a> to activate automatic updates for this site.', 'audiotheme-agent' ),
+							__( 'Enter a connection token from your <a href="%s" target="_blank">dashboard on AudioTheme.com</a> to enable automatic updates for this site.', 'audiotheme-agent' ),
 							array( 'a' => array( 'href' => array(), 'target' => array() ) )
 						),
 						'https://audiotheme.com/account/'

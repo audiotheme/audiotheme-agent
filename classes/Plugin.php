@@ -45,7 +45,7 @@ class AudioTheme_Agent_Plugin extends AudioTheme_Agent_AbstractPlugin {
 	}
 
 	/**
-	 * Proxy access to protected methods.
+	 * Proxy access to read-only properties.
 	 *
 	 * @since 1.0.0
 	 *
