@@ -14,4 +14,8 @@
 			<directory>./tests/phpunit/Unit</directory>
 		</testsuite>
 	</testsuites>
+
+	<listeners>
+		<listener class="JohnKary\PHPUnit\Listener\SpeedTrapListener" />
+	</listeners>
 </phpunit>

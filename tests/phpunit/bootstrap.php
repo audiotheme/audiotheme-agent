@@ -1,5 +1,14 @@
 <?php
 /**
+ * Load the Composer autoloader.
+ */
+if ( file_exists( dirname( dirname( __DIR__ ) ) . '/vendor/autoload.php' ) ) {
+	require( dirname( dirname( __DIR__ ) ) . '/vendor/autoload.php' );
+}
+
+define( 'AUDIOTHEME_AGENT_TESTS_DIR', __DIR__ );
+
+/**
  * Load the WordPress tests.
  *
  * Checks to see if a test case in the unit test suite or the unit test suite
