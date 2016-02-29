@@ -48,10 +48,10 @@
 	<tbody>
 		<?php foreach ( $installed_packages as $slug => $package ) : ?>
 			<tr>
-				<th><?php echo $package['name']; ?></th>
-				<td><?php echo $package['version']; ?></td>
-				<td><?php echo $package['type']; ?></td>
-				<td><?php echo isset( $packages[ $slug ] ) ? $packages[ $slug ]->version : ''; ?></td>
+				<th><?php echo esc_html( $package['name'] ); ?></th>
+				<td><?php echo esc_html( $package['version'] ); ?></td>
+				<td><?php echo esc_html( $package['type'] ); ?></td>
+				<td><?php echo esc_html( isset( $packages[ $slug ] ) ? $packages[ $slug ]->version : '' ); ?></td>
 			</tr>
 		<?php endforeach; ?>
 	</tbody>

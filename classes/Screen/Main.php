@@ -115,12 +115,12 @@ class AudioTheme_Agent_Screen_Main extends AudioTheme_Agent_AbstractProvider {
 	protected function get_tabs() {
 		return array(
 			'default' => array(
-				'label'     => __( 'Subscriptions', 'audiotheme-agent' ),
+				'label'     => esc_html__( 'Subscriptions', 'audiotheme-agent' ),
 				'url'       => admin_url( 'admin.php?page=audiotheme-agent' ),
 				'is_active' => 'default' === $this->get_current_tab_id(),
 			),
 			'support' => array(
-				'label'     => __( 'Support', 'audiotheme-agent' ),
+				'label'     => esc_html__( 'Support', 'audiotheme-agent' ),
 				'url'       => admin_url( 'admin.php?page=audiotheme-agent&tab=support' ),
 				'is_active' => 'support' === $this->get_current_tab_id(),
 			),
