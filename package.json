@@ -7,6 +7,7 @@
   "repository": "audiotheme/audiotheme-agent",
   "main": "Gruntfile.js",
   "devDependencies": {
+    "aws-sdk": "^2.2.39",
     "grunt": "^0.4.5",
     "grunt-contrib-compress": "^0.14.0",
     "grunt-contrib-jshint": "^0.11.3",
