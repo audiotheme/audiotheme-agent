@@ -181,7 +181,7 @@ class AudioTheme_Agent_PackageManager extends AudioTheme_Agent_AbstractProvider 
 	 */
 	public function get_packages( $type = null ) {
 		$slugs     = $this->get_installed_package_slugs();
-		$cache_key = 'audiotheme_packages';// . md5( json_encode( $slugs ) );
+		$cache_key = 'audiotheme_agent_packages-' . hash( 'crc32b', json_encode( $slugs ) );
 
 		$packages = get_site_transient( $cache_key );
 		if ( ! $packages ) {
@@ -234,7 +234,9 @@ class AudioTheme_Agent_PackageManager extends AudioTheme_Agent_AbstractProvider 
 	 * @return array
 	 */
 	public function get_installed_package_slugs() {
-		return array_keys( $this->get_installed_packages() );
+		$slugs = array_keys( $this->get_installed_packages() );
+		sort( $slugs );
+		return $slugs;
 	}
 
 	/**
