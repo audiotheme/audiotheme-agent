@@ -16,6 +16,22 @@
  */
 class AudioTheme_Agent_Client {
 	/**
+	 * Option name for client details.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	const CLIENT_OPTION_NAME = 'audiotheme_agent_client';
+
+	/**
+	 * Option name for the token.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	const TOKEN_OPTION_NAME = 'audiotheme_agent_token';
+
+	/**
 	 * Base API URL.
 	 *
 	 * @since 1.0.0
@@ -163,47 +179,20 @@ class AudioTheme_Agent_Client {
 	 * @return mixed
 	 */
 	public function request( $url, $args = array(), $method = 'GET', $refresh = true ) {
-		if ( ! $this->is_authorized() ) {
-			#return new WP_Error( 'unauthorized_client', __( 'The access token is missing. Try authorizing the client first.' ) );
+		$args = $this->get_request_args( $args, $method );
+		if ( is_wp_error( $args ) ) {
+			return $args;
 		}
 
-		$args = wp_parse_args( $args, array(
-			'headers' => array(),
-			'method'  => $method,
-		) );
-
-		if ( $this->is_authorized() ) {
-			$token = $this->get_access_token();
-
-			// Refresh the access token if it has expired.
-			if ( ! empty( $token ) && time() > (int) $this->get_grant_value( 'expires_at' ) ) {
-				$token = $this->refresh_access_token();
-			}
-
-			if ( is_wp_error( $token ) ) {
-				$this->disconnect();
-				return $token;
-			}
-
-			// Add a Bearer token in the Authorization header.
-			if ( 'bearer' === $this->get_grant_value( 'token_type' ) ) {
-				$args['headers'] = wp_parse_args( $args['headers'], array(
-					'Authorization' => 'Bearer ' . $token,
-				) );
-			}
-
-			// https://tools.ietf.org/html/rfc7523#section-2.2
-			// 'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
-			// 'client_assertion'      => '',
-		}
-
-		$response = wp_remote_request( $url, $args );
-		$status   = wp_remote_retrieve_response_code( $response );
+		$response = $this->wp_remote_request( $url, $args );
+		$status   = $this->wp_remote_retrieve_response_code( $response );
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
-		} elseif ( $refresh && 401 === $status ) {
-			// Try to refresh the token if there's an 401 error.
+		}
+
+		if ( $refresh && 401 === $status && $this->is_authorized() ) {
+			// Try to refresh the token if there's a 401 error.
 			$token = $this->refresh_access_token();
 
 			if ( is_wp_error( $token ) ) {
@@ -219,6 +208,63 @@ class AudioTheme_Agent_Client {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Retrieve WP HTTP API arguments for the request.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array  $args   WP HTTP request arguments.
+	 * @param  string $method HTTP method.
+	 * @return array|WP_Error
+	 */
+	protected function get_request_args( $args, $method ) {
+		$args = wp_parse_args( $args, array(
+			'headers' => array(),
+			'method'  => $method,
+		) );
+
+		if ( $this->is_authorized() ) {
+			$args = $this->add_authorization_header( $args );
+		}
+
+		return $args;
+	}
+
+	/**
+	 * Add an Authorization header to the request arguments.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array $args WP HTTP request arguments.
+	 * @return array|WP_Error
+	 */
+	protected function add_authorization_header( $args ) {
+		$token = $this->get_access_token();
+
+		// Refresh the access token if it has expired.
+		if ( ! empty( $token ) && time() > (int) $this->get_grant_value( 'expires_at' ) ) {
+			$token = $this->refresh_access_token();
+		}
+
+		if ( is_wp_error( $token ) ) {
+			$this->disconnect();
+			return $token;
+		}
+
+		// Add a Bearer token in the Authorization header.
+		if ( 'bearer' === $this->get_grant_value( 'token_type' ) ) {
+			$args['headers'] = wp_parse_args( $args['headers'], array(
+				'Authorization' => 'Bearer ' . $token,
+			) );
+		}
+
+		// https://tools.ietf.org/html/rfc7523#section-2.2
+		// 'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+		// 'client_assertion'      => '',
+
+		return $args;
 	}
 
 	/**
@@ -243,7 +289,7 @@ class AudioTheme_Agent_Client {
 	 * @return object
 	 */
 	protected function authorize( $user_id, $code ) {
-		$response = wp_remote_post( $this->get_token_endpoint(), array(
+		$response = $this->wp_remote_request( $this->get_token_endpoint(), array(
 			'body' => array(
 				'grant_type'   => 'authorization_code',
 				'code'         => $code,
@@ -260,6 +306,7 @@ class AudioTheme_Agent_Client {
 				),
 				'Content-Type'  => 'application/x-www-form-urlencoded',
 			),
+			'method'  => 'POST',
 		) );
 
 		return $this->parse_response( $response );
@@ -274,7 +321,7 @@ class AudioTheme_Agent_Client {
 	 */
 	public function disconnect() {
 		// @todo Revoke the token remotely.
-		delete_option( 'audiotheme_agent_token' );
+		delete_option( self::TOKEN_OPTION_NAME );
 		return $this;
 	}
 
@@ -370,7 +417,7 @@ class AudioTheme_Agent_Client {
 	 * @return array
 	 */
 	public function get_registered_metadata( $key = null ) {
-		$metadata = (array) get_option( 'audiotheme_agent_client', array() );
+		$metadata = (array) get_option( self::CLIENT_OPTION_NAME, array() );
 
 		$value = null;
 		if ( ! empty( $key ) && isset( $metadata[ $key ] ) ) {
@@ -575,12 +622,13 @@ class AudioTheme_Agent_Client {
 	public function register( $token, $args = array() ) {
 		$metadata = wp_parse_args( $args, $this->get_client_metadata() );
 
-		$response = wp_remote_post( $this->get_registration_endpoint(), array(
+		$response = $this->wp_remote_request( $this->get_registration_endpoint(), array(
 			'body'    => wp_json_encode( $metadata ),
 			'headers' => array(
 				'Authorization' => sprintf( 'Bearer %s', $token ),
 				'Content-Type'  => 'application/json',
 			),
+			'method'  => 'POST',
 		) );
 
 		$data = $this->parse_response( $response, 201 );
@@ -598,7 +646,7 @@ class AudioTheme_Agent_Client {
 		 * - client_id_issued_at
 		 * - client_secret_expires_at
 		 */
-		update_option( 'audiotheme_agent_client', (array) $data );
+		update_option( self::CLIENT_OPTION_NAME, (array) $data );
 
 		return $this;
 	}
@@ -622,12 +670,13 @@ class AudioTheme_Agent_Client {
 			$metadata['client_secret'] = $this->get_client_secret();
 		}
 
-		$response = wp_remote_post( $this->get_subscription_endpoint(), array(
+		$response = $this->wp_remote_request( $this->get_subscription_endpoint(), array(
 			'body'    => wp_json_encode( $metadata ),
 			'headers' => array(
 				'Authorization' => sprintf( 'Bearer %s', $token ),
 				'Content-Type'  => 'application/json',
 			),
+			'method'  => 'POST',
 		) );
 
 		$data = $this->parse_response( $response, array( 200, 201 ) );
@@ -646,7 +695,7 @@ class AudioTheme_Agent_Client {
 			 * - client_id_issued_at
 			 * - client_secret_expires_at
 			 */
-			update_option( 'audiotheme_agent_client', (array) $data->register );
+			update_option( self::CLIENT_OPTION_NAME, (array) $data->register );
 
 			$this->set_client_id( $data->register->client_id );
 			$this->set_client_secret( $data->register->client_secret );
@@ -675,13 +724,15 @@ class AudioTheme_Agent_Client {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  string $key Optional. Key of the value to retrieve. Defaults to returning the access token. Keys: access_token, token_type, expires_in, refresh_token
+	 * @param  string $key Optional. Key of the value to retrieve. Defaults to
+	 *                     returning the access token. Keys: access_token,
+	 *                     token_type, expires_in, refresh_token
 	 * @return mixed
 	 */
 	protected function get_grant_value( $key = 'access_token' ) {
-		$token = get_option( 'audiotheme_agent_token' );
+		$token = get_option( self::TOKEN_OPTION_NAME );
 
-		$value = '';
+		$value = null;
 		if ( isset( $token[ $key ] ) ) {
 			$value = $token[ $key ];
 		}
@@ -697,8 +748,8 @@ class AudioTheme_Agent_Client {
 	 * @return object|WP_Error Token object or an error.
 	 */
 	protected function refresh_access_token() {
-		$response = wp_remote_post( $this->get_token_endpoint(), array(
-			'body' => array(
+		$response = $this->wp_remote_request( $this->get_token_endpoint(), array(
+			'body'    => array(
 				'grant_type'    => 'refresh_token',
 				'refresh_token' => $this->get_grant_value( 'refresh_token' ),
 			),
@@ -709,6 +760,7 @@ class AudioTheme_Agent_Client {
 				),
 				'Content-Type'  => 'application/x-www-form-urlencoded',
 			),
+			'method'  => 'POST',
 		) );
 
 		$token = $this->save_token( $this->parse_response( $response ) );
@@ -734,11 +786,11 @@ class AudioTheme_Agent_Client {
 		}
 
 		if ( empty( $token->access_token ) ) {
-			return new WP_Error( 'missing_token', __( 'Missing access token.', 'audiotheme-agent' ) );
+			return new WP_Error( 'missing_token', esc_html__( 'Missing access token.', 'audiotheme-agent' ) );
 		}
 
 		if ( empty( $token->refresh_token ) ) {
-			return new WP_Error( 'missing_token', __( 'Missing refresh token.', 'audiotheme-agent' ) );
+			return new WP_Error( 'missing_token', esc_html__( 'Missing refresh token.', 'audiotheme-agent' ) );
 		}
 
 		// Add the expiration time.
@@ -746,10 +798,10 @@ class AudioTheme_Agent_Client {
 			$token->expires_at = time() + (int) $token->expires_in;
 		}
 
-		if ( false === get_option( 'audiotheme_agent_token', false ) ) {
-			add_option( 'audiotheme_agent_token', (array) $token, '', 'no' );
+		if ( false === get_option( self::TOKEN_OPTION_NAME, false ) ) {
+			add_option( self::TOKEN_OPTION_NAME, (array) $token, '', 'no' );
 		} else {
-			update_option( 'audiotheme_agent_token', (array) $token );
+			update_option( self::TOKEN_OPTION_NAME, (array) $token );
 		}
 
 		return $token;
@@ -773,10 +825,6 @@ class AudioTheme_Agent_Client {
 		$status       = wp_remote_retrieve_response_code( $response );
 		$content_type = wp_remote_retrieve_header( $response, 'content-type' );
 
-		if ( is_wp_error( $content ) ) {
-			return $content;
-		}
-
 		#if ( 'application/json' === $content_type ) {
 			// @todo Consider a strict mode to return JSON decoding errors.
 			$content = $this->maybe_decode_json( $content );
@@ -792,7 +840,7 @@ class AudioTheme_Agent_Client {
 		}
 
 		if ( ! in_array( $status, $expected_status ) ) {
-			return new WP_Error( 'unexpected_status_code', __( 'An unexpected status code was returned by the remote server.', 'audiotheme-agent' ), array(
+			return new WP_Error( 'unexpected_status_code', esc_html__( 'An unexpected status code was returned by the remote server.', 'audiotheme-agent' ), array(
 				'body'   => $content,
 				'status' => $status,
 			) );
@@ -838,12 +886,12 @@ class AudioTheme_Agent_Client {
 
 		// Verify the nonce to ensure the user intended to take this action.
 		if ( ! isset( $_GET['state'] ) || ! wp_verify_nonce( $_GET['state'], 'authorize-client_' . $user_id ) ) {
-			$this->report_error( new WP_Error( 'invalid_state', esc_html__( 'Are you sure you want authorize this connection? Please try again.', 'audiotheme-agent' ) ) );
+			return $this->report_error( new WP_Error( 'invalid_state', esc_html__( 'Are you sure you want authorize this connection? Please try again.', 'audiotheme-agent' ) ) );
 		}
 
 		// Check to see if the user denied authorization.
 		if ( isset( $_GET['error'] ) && 'access_denied' === $_GET['error'] ) {
-			$this->report_error( new WP_Error( 'access_denied', esc_html__( 'Please authorize the connection before continuing.', 'audiotheme-agent' ) ) );
+			return $this->report_error( new WP_Error( 'access_denied', esc_html__( 'Please authorize the connection before continuing.', 'audiotheme-agent' ) ) );
 		}
 
 		// Handle errors returned by the authorization server.
@@ -853,18 +901,18 @@ class AudioTheme_Agent_Client {
 			$error_data    = array();
 
 			if ( ! empty( $_GET['error_description'] ) ) {
-				$error_message = wp_kses( $_GET['error_description'] );
+				$error_message = wp_kses( $_GET['error_description'], array() );
 			}
 
 			if ( ! empty( $_GET['error_uri'] ) ) {
-				$error_data['error_uri'] = esc_url_raw( $_GEt['error_uri'] );
+				$error_data['error_uri'] = esc_url_raw( $_GET['error_uri'] );
 			}
 
-			$this->report_error( new WP_Error( $error_code, $error_message, $error_data ) );
+			return $this->report_error( new WP_Error( $error_code, $error_message, $error_data ) );
 		}
 
 		if ( empty( $_GET['code'] ) ) {
-			$this->report_error( new WP_Error( 'invalid_code', esc_html__( 'A valid authorization code was not provided by the authroization server.', 'audiotheme-agent' ) ) );
+			return $this->report_error( new WP_Error( 'invalid_code', esc_html__( 'A valid authorization code was not provided by the authorization server.', 'audiotheme-agent' ) ) );
 		}
 
 		$code  = sanitize_text_field( $_GET['code'] );
@@ -872,11 +920,10 @@ class AudioTheme_Agent_Client {
 		$token = $this->save_token( $token );
 
 		if ( is_wp_error( $token ) ) {
-			$this->report_error( $token );
+			return $this->report_error( $token );
 		}
 
-		wp_safe_redirect( $this->get_application_url() );
-		exit;
+		return $this->send_to_application();
 	}
 
 	/**
@@ -899,6 +946,16 @@ class AudioTheme_Agent_Client {
 	}
 
 	/**
+	 * Send the request to the application.
+	 *
+	 * @since 1.0.0
+	 */
+	protected function send_to_application() {
+		wp_safe_redirect( $this->get_application_url() );
+		exit;
+	}
+
+	/**
 	 * Retrieve an error message from the query string.
 	 *
 	 * @since 1.0.0
@@ -911,5 +968,30 @@ class AudioTheme_Agent_Client {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Perform a remote request.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  string $url  URL.
+	 * @param  array  $args WP HTTP API args.
+	 * @return mixed
+	 */
+	protected function wp_remote_request( $url, $args ) {
+		return wp_remote_request( $url, $args );
+	}
+
+	/**
+	 * Retrieve the remote response code.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array $response Remote response.
+	 * @return int
+	 */
+	protected function wp_remote_retrieve_response_code( $response ) {
+		return wp_remote_retrieve_response_code( $response );
 	}
 }
