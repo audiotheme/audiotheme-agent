@@ -48,6 +48,7 @@ class AudioTheme_Agent_PackageManager extends AudioTheme_Agent_AbstractProvider 
 	 */
 	protected $managed_plugins = array(
 		'audiotheme',
+		'audiotheme-agent',
 		'cuebar',
 	);
 
