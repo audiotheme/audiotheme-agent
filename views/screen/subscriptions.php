@@ -41,7 +41,6 @@
 		<thead>
 			<tr>
 				<th><?php esc_html_e( 'Product', 'audiotheme-agent' ); ?></th>
-				<th><?php esc_html_e( 'Type', 'audiotheme-agent' ); ?></th>
 				<th><?php esc_html_e( 'Installed Version', 'audiotheme-agent' ); ?></th>
 				<th><?php esc_html_e( 'Current Release', 'audiotheme-agent' ); ?></th>
 				<th></th>
@@ -53,7 +52,6 @@
 
 <script type="text/html" id="tmpl-audiotheme-agent-packages-table-row">
 	<th scope="row">{{ data.name }}</th>
-	<td>{{ data.type_label }}</td>
 	<td>{{ data.installed_version }}</td>
 	<td>{{ data.current_version }}</td>
 	<td class="action">
