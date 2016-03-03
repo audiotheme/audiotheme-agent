@@ -126,10 +126,14 @@
 		},
 
 		render: function() {
-			var packages = this.controller.get( 'packages' ).where({
-					is_viewable: true,
-					type: this.type
-				});
+			var packages = this.controller.get( 'packages' );
+
+			packages = packages.where({
+				is_viewable: true,
+				type: this.type
+			}).filter(function( model ) {
+				return model.get( 'is_installed' ) || model.get( 'has_access' );
+			});
 
 			this.$el.html( this.template({ title: this.title }) );
 			this.$tbody = this.$( 'tbody' ).empty();
@@ -138,6 +142,8 @@
 				_.each( packages, function( model ) {
 					this.addRow( model );
 				}, this );
+			} else {
+				this.$el.hide();
 			}
 
 			return this;
