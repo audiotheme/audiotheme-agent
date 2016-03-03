@@ -51,7 +51,7 @@
 </script>
 
 <script type="text/html" id="tmpl-audiotheme-agent-packages-table-row">
-	<th scope="row">{{ data.name }}</th>
+	<th scope="row"><a href="{{ data.homepage }}" target="_blank">{{ data.name }}</a></th>
 	<td>{{ data.installed_version }}</td>
 	<td>{{ data.current_version }}</td>
 	<td class="action">

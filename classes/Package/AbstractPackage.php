@@ -355,7 +355,9 @@ abstract class AudioTheme_Agent_Package_AbstractPackage implements AudioTheme_Ag
 		return array(
 			'slug'              => $this->get_slug(),
 			'name'              => $this->get_name(),
+			'changelog_url'     => $this->get_changelog_url(),
 			'current_version'   => $this->get_current_version(),
+			'homepage'          => $this->get_homepage(),
 			'is_installed'      => $this->is_installed(),
 			'install_nonce'     => wp_create_nonce( 'install-package_' . $this->get_slug() ),
 			'installed_version' => $this->get_installed_version(),
