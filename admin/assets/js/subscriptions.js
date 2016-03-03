@@ -256,8 +256,7 @@
 		render: function() {
 			this.$el.html( this.template( _.extend( this.model.toJSON(), {
 				nextPaymentDate: function( dateString ) {
-					var date = new Date( dateString );
-					return date.getFullYear() + '-' + ( date.getMonth() + 1 ) + '-' + date.getDate();
+					return dateString.match( /[0-9]{4}-[0-9]{2}-[0-9]{2}/ ).pop();
 				}
 			} ) ) );
 			return this;
