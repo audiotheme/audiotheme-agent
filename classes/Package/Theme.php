@@ -24,6 +24,10 @@ class AudioTheme_Agent_Package_Theme extends AudioTheme_Agent_Package_AbstractPa
 	 * @return boolean
 	 */
 	public function is_active() {
+		if ( is_multisite() ) {
+			return false;
+		}
+
 		return get_stylesheet() === $this->get_slug();
 	}
 
@@ -75,25 +79,15 @@ class AudioTheme_Agent_Package_Theme extends AudioTheme_Agent_Package_AbstractPa
 				esc_attr( $this->get_slug() ),
 				esc_html__( 'Install Now', 'audiotheme-agent' )
 			);
-		} elseif ( $this->is_installed() ) {
+		} elseif ( $this->is_installed() && ! is_multisite() ) {
 			$html = sprintf(
 				'<a href="%s" class="button">%s</a>',
 				esc_url( esc_url( $this->get_customizer_url( array( 'theme' => $this->get_slug() ) ) ) ),
 				esc_html__( 'Preview', 'audiotheme-agent' )
 			);
+		} elseif ( $this->is_installed() && is_multisite() ) {
+			$html = sprintf( '<span class="button button-disabled">%s</span>', esc_html__( 'Installed', 'audiotheme-agent' ) );
 		}
-
-		/*$status = 'install';
-
-		$installed_theme = wp_get_theme( $theme->slug );
-		if ( $installed_theme->exists() ) {
-			if ( version_compare( $installed_theme->get('Version'), $theme->version, '=' ) )
-				$status = 'latest_installed';
-			elseif ( version_compare( $installed_theme->get('Version'), $theme->version, '>' ) )
-				$status = 'newer_installed';
-			else
-				$status = 'update_available';
-		}*/
 
 		return $html;
 	}

@@ -53,7 +53,10 @@ class AudioTheme_Agent_Provider_AJAX extends AudioTheme_Agent_AbstractProvider {
 		$subscriptions = $client->get_subscriptions();
 
 		if ( is_wp_error( $subscriptions ) ) {
-			$subscriptions = array();
+			wp_send_json_error( array(
+				'code'    => $subscriptions->get_error_code(),
+				'message' => sprintf( esc_html__( 'Error: %s', 'audiotheme-agent' ), $subscriptions->get_error_message() ),
+			) );
 		}
 
 		wp_send_json_success( array(

@@ -13,7 +13,7 @@ class ClientAccessorsAndMutatorsTest extends \WP_UnitTestCase {
 	}
 
 	public function test_application_url() {
-		$expected = admin_url( 'admin.php' ) . '?page=audiotheme-agent';
+		$expected = self_admin_url( 'index.php' ) . '?page=audiotheme-agent';
 		$this->assertSame( $expected, $this->client->get_application_url() );
 	}
 

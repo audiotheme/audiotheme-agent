@@ -21,7 +21,12 @@ class AudioTheme_Agent_Screen_Main extends AudioTheme_Agent_AbstractProvider {
 	 * @since 1.0.0
 	 */
 	public function register_hooks() {
-		add_action( 'admin_menu', array( $this, 'add_menu_item' ), 150 );
+		if ( is_multisite() ) {
+			add_action( 'network_admin_menu', array( $this, 'add_menu_item' ) );
+		} else {
+			add_action( 'admin_menu', array( $this, 'add_menu_item' ), 150 );
+		}
+
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_assets' ), 0 );
 	}
 
@@ -100,12 +105,12 @@ class AudioTheme_Agent_Screen_Main extends AudioTheme_Agent_AbstractProvider {
 		return array(
 			'default' => array(
 				'label'     => esc_html__( 'Subscriptions', 'audiotheme-agent' ),
-				'url'       => admin_url( 'admin.php?page=audiotheme-agent' ),
+				'url'       => self_admin_url( 'index.php?page=audiotheme-agent' ),
 				'is_active' => 'default' === $this->get_current_tab_id(),
 			),
 			'support' => array(
 				'label'     => esc_html__( 'Support', 'audiotheme-agent' ),
-				'url'       => admin_url( 'admin.php?page=audiotheme-agent&tab=support' ),
+				'url'       => self_admin_url( 'index.php?page=audiotheme-agent&tab=support' ),
 				'is_active' => 'support' === $this->get_current_tab_id(),
 			),
 		);

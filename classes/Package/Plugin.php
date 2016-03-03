@@ -32,6 +32,10 @@ class AudioTheme_Agent_Package_Plugin extends AudioTheme_Agent_Package_AbstractP
 	 * @return boolean
 	 */
 	public function is_active() {
+		if ( is_multisite() ) {
+			return $this->is_installed() && is_plugin_active_for_network( $this->get_file() );
+		}
+
 		return $this->is_installed() && is_plugin_active( $this->get_file() );
 	}
 

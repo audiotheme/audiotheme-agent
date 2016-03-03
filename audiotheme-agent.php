@@ -17,6 +17,7 @@
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: audiotheme-agent
  * Domain Path: /languages
+ * Network:     true
  */
 
 // Exit if accessed directly.

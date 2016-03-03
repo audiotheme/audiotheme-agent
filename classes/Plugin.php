@@ -89,7 +89,7 @@ class AudioTheme_Agent_Plugin extends AudioTheme_Agent_AbstractPlugin {
 			'audiotheme-agent' === $_REQUEST['referrer'] &&
 			false === strpos( $location, 'error=true' )
 		) {
-			$redirect = admin_url( 'admin.php?page=audiotheme-agent' );
+			$redirect = self_admin_url( 'index.php?page=audiotheme-agent' );
 			$redirect = wp_sanitize_redirect( $redirect );
 			$location = wp_validate_redirect( $redirect, $location );
 		}

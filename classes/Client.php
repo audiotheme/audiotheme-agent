@@ -545,7 +545,7 @@ class AudioTheme_Agent_Client {
 	 */
 	public function get_application_url( $args = array() ) {
 		$args = array_merge( $args, array( 'page' => 'audiotheme-agent' ) );
-		return add_query_arg( $args, admin_url( 'admin.php' ) );
+		return add_query_arg( $args, self_admin_url( 'index.php' ) );
 	}
 
 	/**
