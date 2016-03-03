@@ -263,12 +263,16 @@
 		},
 
 		disconnect: function( e ) {
-			var view = this;
+			var view = this,
+				$button = $( e.target ).prop( 'disabled', true ).addClass( 'button-disabled' ),
+				$spinner = $button.siblings( '.spinner' ).addClass( 'is-active' );
 
 			e.preventDefault();
 
 			this.model.disconnect().done(function( response ) {
 				view.controller.get( 'packages' ).reset( response.packages );
+			}).always(function() {
+				$spinner.removeClass( 'is-active' );
 			});
 		}/*,
 

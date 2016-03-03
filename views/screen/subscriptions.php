@@ -65,5 +65,8 @@
 	<th scope="row">{{ data.title }}</th>
 	<td>{{ data.status }}</td>
 	<td>{{ data.nextPaymentDate( data.next_payment ) }}</td>
-	<td style="text-align: right"><a href="#" class="js-disconnect-subscription"><?php esc_html_e( 'Disconnect', 'audiotheme-agent' ); ?></a></td>
+	<td style="text-align: right">
+		<span class="spinner" style="float: none"></span>
+		<button type="button" class="button js-disconnect-subscription"><?php esc_html_e( 'Disconnect', 'audiotheme-agent' ); ?></button>
+	</td>
 </script>

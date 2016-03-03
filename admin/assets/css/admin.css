@@ -57,6 +57,11 @@
 /* Subscriptions Table
 -------------------------------------------------------------- */
 
+.audiotheme-agent-subscriptions td,
+.audiotheme-agent-subscriptions th {
+	vertical-align: middle;
+}
+
 .audiotheme-agent-subscriptions tbody:empty + tfoot td {
 	border-top-width: 0;
 }
