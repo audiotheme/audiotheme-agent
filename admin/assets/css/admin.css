@@ -6,6 +6,54 @@
 }
 
 
+/* Products Table
+-------------------------------------------------------------- */
+
+.audiotheme-agent-packages caption {
+	color: #23282d;
+	font-size: 1.3em;
+	font-weight: 600;
+	margin: 1em 0;
+	text-align: left;
+}
+
+.audiotheme-agent-packages thead th {
+	border-bottom-width: 0;
+}
+
+.audiotheme-agent-packages td,
+.audiotheme-agent-packages th {
+	box-shadow: inset 0 -1px 0 rgba( 0, 0, 0, 0.1 );
+	vertical-align: middle;
+}
+
+.audiotheme-agent-packages tbody td.action {
+	text-align: right;
+}
+
+.audiotheme-agent-packages tbody tr > td:first-child {
+	border-left: 4px solid #fff;
+}
+
+.audiotheme-agent-packages tbody tr.is-active td,
+.audiotheme-agent-packages tbody tr.is-active th {
+	background-color: #f7fcfe;
+}
+
+.audiotheme-agent-packages tbody tr.is-active > th:first-child {
+	border-left: 4px solid #00a0d2;
+}
+
+.audiotheme-agent-packages tbody tr.has-update td,
+.audiotheme-agent-packages tbody tr.has-update th {
+	background-color: #fff8e5;
+}
+
+.audiotheme-agent-packages tbody tr.has-update > th:first-child {
+	border-left: 4px solid #ffb900;
+}
+
+
 /* Subscriptions Table
 -------------------------------------------------------------- */
 

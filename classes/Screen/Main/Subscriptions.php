@@ -44,8 +44,28 @@ class AudioTheme_Agent_Screen_Main_Subscriptions extends AudioTheme_Agent_Screen
 	 * @since 1.0.0
 	 */
 	public function enqueue_assets() {
-		wp_enqueue_script( 'audiotheme-agent-subscriptions' );
 		wp_enqueue_style( 'audiotheme-agent-admin' );
+
+		wp_enqueue_script(
+			'audiotheme-agent-subscriptions',
+			$this->plugin->get_url( 'admin/assets/js/subscriptions.js' ),
+			array( 'wp-backbone', 'wp-util' ),
+			'1.0.0',
+			true
+		);
+
+		wp_localize_script( 'audiotheme-agent-subscriptions', '_audiothemeAgentSettings', array(
+			'l10n'          => array(
+				'plugins' => esc_html__( 'Plugins', 'audiotheme-agent' ),
+				'themes'  => esc_html__( 'Themes', 'audiotheme-agent' ),
+			),
+			'nonces'        => array(
+				'disconnect' => wp_create_nonce( 'disconnect-subscription' ),
+				'subscribe'  => wp_create_nonce( 'subscribe' ),
+			),
+			'packages'      => $this->plugin->packages->prepare_packages_for_js(),
+			'subscriptions' => $this->get_subscriptions(),
+		) );
 	}
 
 	/**
@@ -54,11 +74,6 @@ class AudioTheme_Agent_Screen_Main_Subscriptions extends AudioTheme_Agent_Screen
 	 * @since 1.0.0
 	 */
 	public function display_screen() {
-		$client = $this->plugin->client;
-
-		$packages = $this->plugin->packages->get_packages();
-		$installed_packages = $this->plugin->packages->get_installed_packages();
-
 		$this->display_screen_header();
 		include( $this->plugin->get_path( 'views/screen/subscriptions.php' ) );
 		$this->display_screen_footer();
@@ -81,5 +96,26 @@ class AudioTheme_Agent_Screen_Main_Subscriptions extends AudioTheme_Agent_Screen
 			'title'   => esc_html__( 'Client Details', 'audiotheme-agent' ),
 			'content' => $content,
 		) );
+	}
+
+	/**
+	 * Retrieve connected subscriptions.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array
+	 */
+	protected function get_subscriptions() {
+		if ( ! $this->plugin->client->is_authorized() ) {
+			return array();
+		}
+
+		$subscriptions = $this->plugin->client->get_subscriptions();
+
+		if ( is_wp_error( $subscriptions ) ) {
+			$subscriptions = array();
+		}
+
+		return $subscriptions;
 	}
 }

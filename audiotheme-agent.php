@@ -49,6 +49,26 @@ function audiotheme_agent_autoloader( $class ) {
 spl_autoload_register( 'audiotheme_agent_autoloader' );
 
 /**
+ * Autoload mapped classes.
+ *
+ * @since 1.0.0
+ *
+ * @param string $class Class name.
+ */
+function audiotheme_agent_autoloader_classmap( $class ) {
+	$class_map = array(
+		'Automatic_Upgrader_Skin' => ABSPATH . 'wp-admin/includes/class-wp-upgrader.php',
+		'Plugin_Upgrader'         => ABSPATH . 'wp-admin/includes/class-wp-upgrader.php',
+		'Theme_Upgrader'          => ABSPATH . 'wp-admin/includes/class-wp-upgrader.php',
+	);
+
+	if ( isset( $class_map[ $class ] ) ) {
+		require_once( $class_map[ $class ] );
+	}
+}
+spl_autoload_register( 'audiotheme_agent_autoloader_classmap' );
+
+/**
  * Retrieve the main plugin instance.
  *
  * @since 1.0.0
@@ -67,9 +87,7 @@ function audiotheme_agent() {
 	return $instance;
 }
 
-$audiotheme_agent = audiotheme_agent();
-
-$audiotheme_agent
+$audiotheme_agent = audiotheme_agent()
 	->set_basename( plugin_basename( __FILE__ ) )
 	->set_directory( plugin_dir_path( __FILE__ ) )
 	->set_file( __FILE__ )
@@ -80,7 +98,7 @@ if ( is_admin() ) {
 	$audiotheme_agent
 		->register_hooks( new AudioTheme_Agent_Provider_I18n() )
 		->register_hooks( new AudioTheme_Agent_Provider_AJAX() )
-		->register_hooks( $audiotheme_agent->packages )
+		->register_hooks( new AudioTheme_Agent_Provider_PackageHooks() )
 		->register_hooks( new AudioTheme_Agent_Screen_Main_Subscriptions() );
 }
 

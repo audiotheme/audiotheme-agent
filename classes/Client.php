@@ -117,17 +117,15 @@ class AudioTheme_Agent_Client {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  array $slugs Package slugs.
 	 * @return array
 	 */
-	public function get_packages( $slugs = array() ) {
-		return $this->get( '/v1/packages', array(
-			'slugs' => $slugs,
-		) );
+	public function get_packages() {
+		return $this->get( '/v1/packages' );
 	}
 
 	/**
-	 * Retrieve subscriptions associated with the registered client and authorized user.
+	 * Retrieve subscriptions associated with the registered client and
+	 * authorized user.
 	 *
 	 * @since 1.0.0
 	 *
@@ -135,6 +133,18 @@ class AudioTheme_Agent_Client {
 	 */
 	public function get_subscriptions() {
 		return $this->get( '/v1/subscriptions/me' );
+	}
+
+	/**
+	 * Disconnect a subscription.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  int $id Subscription id.
+	 * @return array
+	 */
+	public function disconnect_subscription( $id ) {
+		return $this->post( sprintf( '/v1/subscriptions/%d/disconnect', $id ) );
 	}
 
 	/**

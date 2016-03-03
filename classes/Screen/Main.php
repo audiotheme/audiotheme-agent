@@ -50,22 +50,6 @@ class AudioTheme_Agent_Screen_Main extends AudioTheme_Agent_AbstractProvider {
 	 */
 	public function register_assets() {
 		wp_register_style( 'audiotheme-agent-admin', $this->plugin->get_url( 'admin/assets/css/admin.css' ) );
-
-		wp_register_script(
-			'audiotheme-agent-subscriptions',
-			$this->plugin->get_url( 'admin/assets/js/subscriptions.js' ),
-			array( 'wp-backbone', 'wp-util' ),
-			'1.0.0',
-			true
-		);
-
-		wp_localize_script( 'audiotheme-agent-subscriptions', '_audiothemeAgentSettings', array(
-			'nonces'        => array(
-				'disconnect' => wp_create_nonce( 'disconnect-subscription' ),
-				'subscribe'  => wp_create_nonce( 'subscribe' ),
-			),
-			'subscriptions' => $this->get_subscriptions(),
-		) );
 	}
 
 	/**
@@ -136,26 +120,5 @@ class AudioTheme_Agent_Screen_Main extends AudioTheme_Agent_AbstractProvider {
 	 */
 	protected function get_current_tab_id() {
 		return empty( $_GET['tab'] ) ? 'default' : sanitize_text_field( $_GET['tab'] );
-	}
-
-	/**
-	 * Retrieve connected subscriptions.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array
-	 */
-	protected function get_subscriptions() {
-		if ( ! $this->plugin->client->is_authorized() ) {
-			return array();
-		}
-
-		$subscriptions = $this->plugin->client->get_subscriptions();
-
-		if ( is_wp_error( $subscriptions ) ) {
-			$subscriptions = array();
-		}
-
-		return $subscriptions;
 	}
 }

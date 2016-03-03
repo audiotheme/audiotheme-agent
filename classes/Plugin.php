@@ -68,5 +68,32 @@ class AudioTheme_Agent_Plugin extends AudioTheme_Agent_AbstractPlugin {
 	 */
 	public function load_plugin() {
 		add_action( 'admin_post_authorize-audiotheme-agent', array( $this->client, 'handle_callback' ) );
+
+		if ( is_admin() ) {
+			add_filter( 'wp_redirect', array( $this, 'filter_redirects' ), 1 );
+		}
+	}
+
+	/**
+	 * Redirect back to the Agent screen after activating a plugin.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $location Default redirection location.
+	 * @return string
+	 */
+	public function filter_redirects( $location ) {
+		if (
+			false !== strpos( $location, 'plugins.php' ) &&
+			! empty( $_REQUEST['referrer'] ) &&
+			'audiotheme-agent' === $_REQUEST['referrer'] &&
+			false === strpos( $location, 'error=true' )
+		) {
+			$redirect = admin_url( 'admin.php?page=audiotheme-agent' );
+			$redirect = wp_sanitize_redirect( $redirect );
+			$location = wp_validate_redirect( $redirect, $location );
+		}
+
+		return $location;
 	}
 }

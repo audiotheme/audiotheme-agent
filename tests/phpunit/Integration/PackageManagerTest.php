@@ -4,6 +4,7 @@ namespace AudioTheme\Agent\Test\Integration;
 
 use AudioTheme_Agent_Client;
 use AudioTheme_Agent_PackageManager;
+use AudioTheme_Agent_Provider_PackageHooks;
 
 
 class PackageManagerTest extends \WP_UnitTestCase {
@@ -39,7 +40,7 @@ class PackageManagerTest extends \WP_UnitTestCase {
 	}
 
 	public function test_package_source_file_header() {
-		$this->plugin->register_hooks( $this->plugin->packages );
+		$this->plugin->register_hooks( new AudioTheme_Agent_Provider_PackageHooks() );
 		$theme = wp_get_theme( 'managed-theme', $this->theme_root );
 		$this->assertSame( 'https://audiotheme.com/', $theme->get( 'Package Source' ) );
 	}
@@ -49,15 +50,9 @@ class PackageManagerTest extends \WP_UnitTestCase {
 	}
 
 	public function test_installed_themes() {
-		$this->plugin->register_hooks( $this->plugin->packages );
+		$this->plugin->register_hooks( new AudioTheme_Agent_Provider_PackageHooks() );
 		$themes = $this->plugin->packages->get_installed_themes();
 		$this->assertArrayHasKey( 'managed-theme', $themes );
-	}
-
-	public function test_installed_package_slugs() {
-		$this->plugin->register_hooks( $this->plugin->packages );
-		$slugs = $this->plugin->packages->get_installed_package_slugs();
-		$this->assertContains( 'managed-theme', $slugs );
 	}
 
 	public function _theme_root( $directory ) {

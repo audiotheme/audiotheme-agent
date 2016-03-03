@@ -1,6 +1,6 @@
 <h2><?php esc_html_e( 'Subscriptions', 'audiotheme-agent' ); ?></h2>
 
-<table class="audiotheme-agent-subscriptions widefat fixed">
+<table class="audiotheme-agent-subscriptions widefat striped fixed">
 	<thead>
 		<tr>
 			<th><?php esc_html_e( 'Subscription', 'audiotheme-agent' ); ?></th>
@@ -34,32 +34,38 @@
 	</tfoot>
 </table>
 
-<h2><?php esc_html_e( 'Products', 'audiotheme-agent' ); ?></h2>
+<script type="text/html" id="tmpl-audiotheme-agent-packages-table">
+	<h2>{{ data.title }}</h2>
 
-<table class="wp-list-table widefat fixed striped">
-	<thead>
-		<tr>
-			<th><?php esc_html_e( 'Product', 'audiotheme-agent' ); ?></th>
-			<th><?php esc_html_e( 'Version', 'audiotheme-agent' ); ?></th>
-			<th><?php esc_html_e( 'Type', 'audiotheme-agent' ); ?></th>
-			<th><?php esc_html_e( 'Current Version', 'audiotheme-agent' ); ?></th>
-		</tr>
-	</thead>
-	<tbody>
-		<?php foreach ( $installed_packages as $slug => $package ) : ?>
+	<table class="audiotheme-agent-packages wp-list-table widefat fixed">
+		<thead>
 			<tr>
-				<th><?php echo esc_html( $package['name'] ); ?></th>
-				<td><?php echo esc_html( $package['version'] ); ?></td>
-				<td><?php echo esc_html( $package['type'] ); ?></td>
-				<td><?php echo esc_html( isset( $packages[ $slug ] ) ? $packages[ $slug ]->version : '' ); ?></td>
+				<th><?php esc_html_e( 'Product', 'audiotheme-agent' ); ?></th>
+				<th><?php esc_html_e( 'Type', 'audiotheme-agent' ); ?></th>
+				<th><?php esc_html_e( 'Installed Version', 'audiotheme-agent' ); ?></th>
+				<th><?php esc_html_e( 'Current Release', 'audiotheme-agent' ); ?></th>
+				<th></th>
 			</tr>
-		<?php endforeach; ?>
-	</tbody>
-</table>
+		</thead>
+		<tbody></tbody>
+	</table>
+</script>
+
+<script type="text/html" id="tmpl-audiotheme-agent-packages-table-row">
+	<th scope="row">{{ data.name }}</th>
+	<td>{{ data.type_label }}</td>
+	<td>{{ data.installed_version }}</td>
+	<td>{{ data.current_version }}</td>
+	<td class="action">
+		<span class="spinner" style="float: none"></span>
+		{{{ data.action_button }}}
+		<span class="response"></span>
+	</td>
+</script>
 
 <script type="text/html" id="tmpl-audiotheme-agent-subscriptions-table-row">
 	<th scope="row">{{ data.title }}</th>
 	<td>{{ data.status }}</td>
 	<td>{{ data.nextPaymentDate( data.next_payment ) }}</td>
-	<td><a href="#" class="js-disconnect-subscription"><?php esc_html_e( 'Disconnect', 'audiotheme-agent' ); ?></a></td>
+	<td style="text-align: right"><a href="#" class="js-disconnect-subscription"><?php esc_html_e( 'Disconnect', 'audiotheme-agent' ); ?></a></td>
 </script>
