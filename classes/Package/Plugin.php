@@ -103,7 +103,7 @@ class AudioTheme_Agent_Package_Plugin extends AudioTheme_Agent_Package_AbstractP
 			$html = sprintf(
 				'<a href="%s" class="button">%s</a>',
 				esc_url( $this->get_activation_url() ),
-				esc_html__( 'Activate', 'audiotheme-agent' )
+				is_network_admin() ? esc_html__( 'Network Activate', 'audiotheme-agent' ) : esc_html__( 'Activate', 'audiotheme-agent' )
 			);
 		} elseif ( ! $this->is_installed() && current_user_can( 'install_plugins' ) && $this->has_download_url() ) {
 			$html = sprintf(
