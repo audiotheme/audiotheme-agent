@@ -1,6 +1,6 @@
 <h2><?php esc_html_e( 'Subscriptions', 'audiotheme-agent' ); ?></h2>
 
-<table class="audiotheme-agent-subscriptions widefat striped fixed">
+<table class="audiotheme-agent-subscriptions audiotheme-agent-table widefat striped">
 	<thead>
 		<tr>
 			<th><?php esc_html_e( 'Subscription', 'audiotheme-agent' ); ?></th>
@@ -37,13 +37,13 @@
 <script type="text/html" id="tmpl-audiotheme-agent-packages-table">
 	<h2>{{ data.title }}</h2>
 
-	<table class="audiotheme-agent-packages wp-list-table widefat fixed">
+	<table class="audiotheme-agent-packages audiotheme-agent-table widefat">
 		<thead>
 			<tr>
 				<th><?php esc_html_e( 'Product', 'audiotheme-agent' ); ?></th>
-				<th><?php esc_html_e( 'Installed Version', 'audiotheme-agent' ); ?></th>
-				<th><?php esc_html_e( 'Current Release', 'audiotheme-agent' ); ?></th>
-				<th></th>
+				<th class="column-installed-version"><?php esc_html_e( 'Installed Version', 'audiotheme-agent' ); ?></th>
+				<th class="column-current-version"><?php esc_html_e( 'Current Release', 'audiotheme-agent' ); ?></th>
+				<th class="column-action"></th>
 			</tr>
 		</thead>
 		<tbody></tbody>
@@ -52,10 +52,9 @@
 
 <script type="text/html" id="tmpl-audiotheme-agent-packages-table-row">
 	<th scope="row"><a href="{{ data.homepage }}" target="_blank">{{ data.name }}</a></th>
-	<td>{{ data.installed_version }}</td>
-	<td>{{ data.current_version }}</td>
-	<td class="action">
-		<span class="spinner" style="float: none"></span>
+	<td class="column-installed-version">{{ data.installed_version }}</td>
+	<td class="column-current-version">{{ data.current_version }}</td>
+	<td class="column-action">
 		{{{ data.action_button }}}
 		<span class="response"></span>
 	</td>
@@ -65,8 +64,7 @@
 	<th scope="row">{{ data.title }}</th>
 	<td>{{ data.status }}</td>
 	<td>{{ data.nextPaymentDate( data.next_payment ) }}</td>
-	<td style="text-align: right">
-		<span class="spinner" style="float: none"></span>
+	<td class="column-action">
 		<button type="button" class="button js-disconnect-subscription"><?php esc_html_e( 'Disconnect', 'audiotheme-agent' ); ?></button>
 	</td>
 </script>

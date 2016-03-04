@@ -174,6 +174,7 @@
 		},
 
 		render: function() {
+			this.$spinner = $( '<span class="spinner" />' );
 			this.$el.html( this.template( this.model.toJSON() ) );
 
 			if ( this.model.get( 'has_update' ) ) {
@@ -195,19 +196,16 @@
 
 		installPackage: function( e ) {
 			var $button = $( e.target ).prop( 'disabled', true ).addClass( 'button-disabled' ),
-				$status = this.$( '.status' ),
-				$spinner = $button.siblings( '.spinner' ).addClass( 'is-active' );
+				$column = $button.closest( '.column-action' );
 
 			e.preventDefault();
 
-			this.controller.install( this.model.get( 'slug' ) )
-				.done(function( response ) {
-					$button.hide();
-				}).fail(function( response ) {
-					$button.remove();
+			$button.before( this.$spinner.addClass( 'is-active' ) );
 
+			this.controller.install( this.model.get( 'slug' ) )
+				.fail(function( response ) {
 					if ( 'message' in response ) {
-						$status.append( '<span class="error-message" />' )
+						$column.append( '<span class="error-message" />' )
 							.find( '.error-message' ).text( response.message );
 					}
 				}).always(function() {
@@ -260,25 +258,28 @@
 		},
 
 		render: function() {
+			this.$spinner = $( '<span class="spinner" />' );
 			this.$el.html( this.template( _.extend( this.model.toJSON(), {
 				nextPaymentDate: function( dateString ) {
 					return dateString.match( /[0-9]{4}-[0-9]{2}-[0-9]{2}/ ).pop();
 				}
 			} ) ) );
+
 			return this;
 		},
 
 		disconnect: function( e ) {
 			var view = this,
-				$button = $( e.target ).prop( 'disabled', true ).addClass( 'button-disabled' ),
-				$spinner = $button.siblings( '.spinner' ).addClass( 'is-active' );
+				$button = $( e.target ).prop( 'disabled', true ).addClass( 'button-disabled' );
 
 			e.preventDefault();
+
+			$button.before( this.$spinner.addClass( 'is-active' ) );
 
 			this.model.disconnect().done(function( response ) {
 				view.controller.get( 'packages' ).reset( response.packages );
 			}).always(function() {
-				$spinner.removeClass( 'is-active' );
+				view.$spinner.removeClass( 'is-active' );
 			});
 		}/*,
 
