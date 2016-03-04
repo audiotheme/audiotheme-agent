@@ -26,6 +26,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Plugin version.
+ */
+define( 'AUDIOTHEME_AGENT_VERSION', '1.0.0' );
+
+/**
  * Autoloader callback.
  *
  * Converts a class name to a file path and requires it if it exists.

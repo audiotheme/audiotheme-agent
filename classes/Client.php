@@ -414,7 +414,7 @@ class AudioTheme_Agent_Client {
 			'tos_uri'                    => '',
 			'policy_uri'                 => '',
 			'software_id'                => 'e3c8b4b3-3e0b-4c75-af42-0cd70202f391',
-			'software_version'           => '1.0.0',
+			'software_version'           => AUDIOTHEME_AGENT_VERSION,
 		);
 	}
 
