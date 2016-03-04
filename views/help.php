@@ -12,15 +12,9 @@
 			<th scope="row"><?php esc_html_e( 'Client ID:', 'audiotheme-agent' ); ?></th>
 			<td><?php echo empty( $metadata['client_id'] ) ? esc_html__( 'Not Registered', 'audiotheme-agent' ) : esc_html( $metadata['client_id'] ); ?></td>
 		</tr>
-	</tbody>
-</table>
 
-<?php if ( $this->plugin->client->is_registered() ) : ?>
+		<?php if ( $this->plugin->client->is_registered() ) : ?>
 
-	<h4><?php esc_html_e( 'Registration Metadata', 'audiotheme-agent' ); ?></h4>
-
-	<table class="audiotheme-agent-help-table">
-		<tbody>
 			<tr>
 				<th scope="row"><?php esc_html_e( 'Registered URI:', 'audiotheme-agent' ); ?></th>
 				<td><?php echo esc_url( $metadata['client_uri'] ); ?></td>
@@ -29,8 +23,12 @@
 				<th scope="row"><?php esc_html_e( 'Current URI:', 'audiotheme-agent' ); ?></th>
 				<td><?php echo esc_url( home_url() ); ?></td>
 			</tr>
-		</tbody>
-	</table>
+
+		<?php endif; ?>
+	</tbody>
+</table>
+
+<?php if ( $this->plugin->client->is_registered() ) : ?>
 
 	<h4><?php esc_html_e( 'Disconnect Site', 'audiotheme-agent' ); ?></h4>
 
