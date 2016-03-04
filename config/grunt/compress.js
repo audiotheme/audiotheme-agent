@@ -21,6 +21,8 @@ module.exports = {
 					'!phpcs.log',
 					'!phpcs.xml',
 					'!phpunit.xml',
+					'!README.md',
+					'!screenshot-1.png',
 					'!shipitfile.js'
 				],
 				dest: '<%= package.name %>/'
