@@ -208,8 +208,6 @@
 						$column.append( '<span class="error-message" />' )
 							.find( '.error-message' ).text( response.message );
 					}
-				}).always(function() {
-					$spinner.removeClass( 'is-active' );
 				});
 		}
 	});
