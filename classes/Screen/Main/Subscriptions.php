@@ -86,7 +86,8 @@ class AudioTheme_Agent_Screen_Main_Subscriptions extends AudioTheme_Agent_Screen
 	 * @since 1.0.0
 	 */
 	protected function add_help_tab() {
-		$metadata = $this->plugin->client->get_registered_metadata();
+		$client   = $this->plugin->client;
+		$metadata = $client->get_registered_metadata();
 
 		$disconnect_url = add_query_arg( array(
 			'page'   => 'audiotheme-agent',
