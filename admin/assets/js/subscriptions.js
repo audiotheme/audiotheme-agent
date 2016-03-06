@@ -381,4 +381,9 @@
 		.append( pluginsTable.render().el )
 		.append( themesTable.render().el );
 
+	$( '.audiotheme-agent-client-notice' ).on( 'click', 'a', function( e ) {
+		e.preventDefault();
+		$( '#contextual-help-link' ).click();
+	});
+
 })( window, jQuery, _, Backbone, wp );

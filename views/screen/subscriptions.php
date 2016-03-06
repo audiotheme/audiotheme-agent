@@ -1,5 +1,15 @@
 <h2><?php esc_html_e( 'Subscriptions', 'audiotheme-agent' ); ?></h2>
 
+<?php
+if ( $client->has_identity_crisis() ) {
+	printf(
+		'<div class="notice notice-error audiotheme-agent-client-notice"><p>%s <a href="#identity-crisis">%s</a></p></div>',
+		esc_html__( 'Outdated client information has been detected.', 'audiotheme-agent' ),
+		esc_html__( 'Learn more.', 'audiotheme-agent' )
+	);
+}
+?>
+
 <table class="audiotheme-agent-subscriptions audiotheme-agent-table widefat striped">
 	<thead>
 		<tr>
