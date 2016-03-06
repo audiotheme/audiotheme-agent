@@ -440,6 +440,100 @@ class AudioTheme_Agent_Client {
 	}
 
 	/**
+	 * Whether any site details have changed since the client was registered.
+	 *
+	 * @return boolean
+	 */
+	public function has_identity_crisis() {
+		if ( ! $this->is_registered() ) {
+			return false;
+		}
+
+		$name = $this->get_registered_metadata( 'client_name' );
+		if ( esc_html( get_bloginfo( 'name' ) ) !== $name ) {
+			return true;
+		}
+
+		$uri  = $this->get_registered_metadata( 'client_uri' );
+		if ( esc_url_raw( home_url() ) !== $uri ) {
+			return true;
+		}
+
+		$logo_uri  = $this->get_registered_metadata( 'logo_uri' );
+		$site_icon = esc_url_raw( get_site_icon_url() );
+		if ( ( ! empty( $logo_uri ) || ! empty( $icon ) ) && $site_icon !== $logo_uri ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Update the registered client metadata.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array $args Metadata to update.
+	 * @return array
+	 */
+	public function update_client_metadata( $args = array() ) {
+		if ( ! $this->is_registered() ) {
+			return new WP_Error( 'unregistered_client', esc_html__( 'Cannot update an unregistered client.', 'audiotheme-agent' ) );
+		}
+
+		$metadata = $this->get_registered_metadata();
+
+		if ( empty( $metadata['registration_access_token'] ) ) {
+			return new WP_Error( 'invalid_token', esc_html__( 'Cannot update client metadata without a registration access token.', 'audiotheme-agent' ) );
+		}
+
+		if ( empty( $metadata['registration_client_uri'] ) ) {
+			return new WP_Error( 'unknown_endpoint', 'Unknown client registration management URI.' );
+		}
+
+		$token = $metadata['registration_access_token'];
+		$registration_uri = $metadata['registration_client_uri'];
+
+		// Update dynamic values. These can be overridden in the $args.
+		$metadata['redirect_uris'] = array( $this->get_redirect_uri() );
+		$metadata['client_name']   = esc_html( get_bloginfo( 'name' ) );
+		$metadata['client_uri']    = esc_url_raw( home_url() );
+		$metadata['logo_uri']      = esc_url_raw( get_site_icon_url() );
+
+		$metadata = wp_parse_args( $args, $metadata );
+
+		// Remove metadata that shouldn't be sent.
+		unset(
+			$metadata['client_id_issued_at'],
+			$metadata['client_secret_expires_at'],
+			$metadata['registration_access_token'],
+			$metadata['registration_client_uri']
+		);
+
+		$response = $this->wp_remote_request( esc_url_raw( $registration_uri ), array(
+			'body'    => wp_json_encode( $metadata ),
+			'headers' => array(
+				'Authorization' => sprintf( 'Bearer %s', sanitize_text_field( $token ) ),
+				'Content-Type'  => 'application/json',
+			),
+			'method'  => 'PUT',
+		) );
+
+		$data = $this->parse_response( $response );
+
+		if ( is_wp_error( $data ) ) {
+			return $data;
+		}
+
+		/*
+		 * Save the registration data.
+		 */
+		update_option( self::CLIENT_OPTION_NAME, (array) $data );
+
+		return $this;
+	}
+
+	/**
 	 * Retrieve the authorization endpoint URL.
 	 *
 	 * @since 1.0.0
@@ -651,6 +745,8 @@ class AudioTheme_Agent_Client {
 		 * Save the registration data.
 		 *
 		 * Should include the following plus any saved client metadata:
+		 * - registration_access_token
+		 * - registration_client_uri
 		 * - client_id
 		 * - client_secret
 		 * - client_id_issued_at
@@ -700,6 +796,8 @@ class AudioTheme_Agent_Client {
 			 * Save the registration data.
 			 *
 			 * Should include the following plus any saved client metadata:
+			 * - registration_access_token
+			 * - registration_client_uri
 			 * - client_id
 			 * - client_secret
 			 * - client_id_issued_at
@@ -713,6 +811,47 @@ class AudioTheme_Agent_Client {
 
 		if ( ! empty( $data->authorize ) ) {
 			$token = $this->save_token( $data->authorize );
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Unregister the client.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return $this|WP_Error
+	 */
+	public function unregister() {
+		if ( ! $this->is_registered() ) {
+			return new WP_Error( 'unregistered_client', esc_html__( 'Cannot delete an unregistered client.', 'audiotheme-agent' ) );
+		}
+
+		$metadata = $this->get_registered_metadata();
+
+		if ( empty( $metadata['registration_access_token'] ) ) {
+			return new WP_Error( 'invalid_token', esc_html__( 'Cannot unregister a client without a registration access token.', 'audiotheme-agent' ) );
+		}
+
+		if ( empty( $metadata['registration_client_uri'] ) ) {
+			return new WP_Error( 'unknown_endpoint', 'Unknown client registration management URI.' );
+		}
+
+		delete_option( AudioTheme_Agent_Client::CLIENT_OPTION_NAME );
+		delete_option( AudioTheme_Agent_Client::TOKEN_OPTION_NAME );
+
+		$response = $this->wp_remote_request( esc_url_raw( $metadata['registration_client_uri'] ), array(
+			'headers' => array(
+				'Authorization' => sprintf( 'Bearer %s', sanitize_text_field( $metadata['registration_access_token'] ) ),
+			),
+			'method'  => 'DELETE',
+		) );
+
+		$data = $this->parse_response( $response, 204 );
+
+		if ( is_wp_error( $data ) ) {
+			return $data;
 		}
 
 		return $this;
