@@ -95,6 +95,8 @@ class AudioTheme_Agent_Plugin extends AudioTheme_Agent_AbstractPlugin {
 
 		if ( is_admin() ) {
 			add_filter( 'wp_redirect', array( $this, 'filter_redirects' ), 1 );
+			add_filter( 'plugin_action_links_' . $this->get_basename(), array( $this, 'filter_action_links' ) );
+			add_filter( 'network_admin_plugin_action_links_' . $this->get_basename(), array( $this, 'filter_action_links' ) );
 		}
 	}
 
@@ -119,5 +121,25 @@ class AudioTheme_Agent_Plugin extends AudioTheme_Agent_AbstractPlugin {
 		}
 
 		return $location;
+	}
+
+	/**
+	 * Filter plugin action links.
+	 *
+	 * Adds a 'Manage' link pointing to the admin screen.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array $actions Array of action links.
+	 * @return array
+	 */
+	public function filter_action_links( $actions ) {
+		$actions['manage'] = sprintf(
+			'<a href="%s">%s</a>',
+			esc_url( add_query_arg( 'page', 'audiotheme-agent', self_admin_url( 'index.php' ) ) ),
+			esc_html__( 'Manage', 'audiotheme-agent' )
+		);
+
+		return $actions;
 	}
 }
