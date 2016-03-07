@@ -103,15 +103,16 @@ $audiotheme_agent = audiotheme_agent()
 	->set_directory( plugin_dir_path( __FILE__ ) )
 	->set_file( __FILE__ )
 	->set_slug( 'audiotheme-agent' )
-	->set_url( plugin_dir_url( __FILE__ ) );
+	->set_url( plugin_dir_url( __FILE__ ) )
+	->register_hooks( new AudioTheme_Agent_Provider_Setup() )
+	->register_hooks( new AudioTheme_Agent_Provider_UpdateManager() );
 
 if ( is_admin() ) {
 	$audiotheme_agent
-		->register_hooks( new AudioTheme_Agent_Provider_Setup() )
 		->register_hooks( new AudioTheme_Agent_Provider_I18n() )
 		->register_hooks( new AudioTheme_Agent_Provider_AJAX() )
-		->register_hooks( new AudioTheme_Agent_Provider_UpdateManager() )
-		->register_hooks( new AudioTheme_Agent_Screen_Main_Subscriptions() );
+		->register_hooks( new AudioTheme_Agent_Screen_Main_Subscriptions() )
+		->register_hooks( new AudioTheme_Agent_Provider_AudioThemeCompatibility() );
 }
 
 /**
