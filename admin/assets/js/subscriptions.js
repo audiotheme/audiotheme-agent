@@ -142,6 +142,7 @@
 				_.each( packages, function( model ) {
 					this.addRow( model );
 				}, this );
+				this.$el.show();
 			} else {
 				this.$el.hide();
 			}
