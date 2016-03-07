@@ -110,7 +110,7 @@ if ( is_admin() ) {
 		->register_hooks( new AudioTheme_Agent_Provider_Setup() )
 		->register_hooks( new AudioTheme_Agent_Provider_I18n() )
 		->register_hooks( new AudioTheme_Agent_Provider_AJAX() )
-		->register_hooks( new AudioTheme_Agent_Provider_PackageHooks() )
+		->register_hooks( new AudioTheme_Agent_Provider_UpdateManager() )
 		->register_hooks( new AudioTheme_Agent_Screen_Main_Subscriptions() );
 }
 

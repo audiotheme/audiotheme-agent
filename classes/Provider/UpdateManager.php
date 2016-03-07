@@ -1,6 +1,6 @@
 <?php
 /**
- * Package hooks.
+ * Package update manager.
  *
  * @package   AudioTheme\Agent
  * @copyright Copyright (c) 2016, AudioTheme, LLC
@@ -9,12 +9,12 @@
  */
 
 /**
- * Package hooks provider class.
+ * Package update manager class.
  *
  * @package AudioTheme\Agent
  * @since   1.0.0
  */
-class AudioTheme_Agent_Provider_PackageHooks extends AudioTheme_Agent_AbstractProvider {
+class AudioTheme_Agent_Provider_UpdateManager extends AudioTheme_Agent_AbstractProvider {
 	/**
 	 * Register hooks.
 	 *
