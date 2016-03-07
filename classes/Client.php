@@ -88,6 +88,14 @@ class AudioTheme_Agent_Client {
 	protected $client_secret;
 
 	/**
+	 * Logger.
+	 *
+	 * @since 1.0.0
+	 * @var AudioTheme_Agent_Logger
+	 */
+	protected $logger;
+
+	/**
 	 * Instantiate a client.
 	 *
 	 * @since 1.0.0
@@ -97,6 +105,19 @@ class AudioTheme_Agent_Client {
 			$this->set_client_id( $this->get_registered_metadata( 'client_id' ) );
 			$this->set_client_secret( $this->get_registered_metadata( 'client_secret' ) );
 		}
+	}
+
+	/**
+	 * Set a logger.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  AudioTheme_Agent_Logger $logger Logger instance.
+	 * @return $this
+	 */
+	public function set_logger( $logger ) {
+		$this->logger = $logger;
+		return $this;
 	}
 
 	/**

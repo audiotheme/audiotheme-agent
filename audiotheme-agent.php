@@ -85,9 +85,14 @@ function audiotheme_agent() {
 	static $instance;
 
 	if ( null === $instance ) {
+		$upload_dir = wp_upload_dir();
+		$filename   = path_join( $upload_dir['basedir'], 'audiotheme/logs/agent.log' );
+
 		$client   = new AudioTheme_Agent_Client();
+		$logger   = new AudioTheme_Agent_Logger( $filename );
 		$packages = new AudioTheme_Agent_PackageManager( $client );
 		$instance = new AudioTheme_Agent_Plugin( $client, $packages );
+		$instance->set_logger( $logger );
 	}
 
 	return $instance;
@@ -102,6 +107,7 @@ $audiotheme_agent = audiotheme_agent()
 
 if ( is_admin() ) {
 	$audiotheme_agent
+		->register_hooks( new AudioTheme_Agent_Provider_Setup() )
 		->register_hooks( new AudioTheme_Agent_Provider_I18n() )
 		->register_hooks( new AudioTheme_Agent_Provider_AJAX() )
 		->register_hooks( new AudioTheme_Agent_Provider_PackageHooks() )

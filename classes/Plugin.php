@@ -24,6 +24,14 @@ class AudioTheme_Agent_Plugin extends AudioTheme_Agent_AbstractPlugin {
 	protected $client;
 
 	/**
+	 * Logger instance.
+	 *
+	 * @since 1.0.0
+	 * @var AudioTheme_Agent_Logger
+	 */
+	protected $logger;
+
+	/**
 	 * Package manager.
 	 *
 	 * @since 1.0.0
@@ -56,9 +64,25 @@ class AudioTheme_Agent_Plugin extends AudioTheme_Agent_AbstractPlugin {
 		switch ( $name ) {
 			case 'client' :
 				return $this->client;
+			case 'logger' :
+				return $this->logger;
 			case 'packages' :
 				return $this->packages;
 		}
+	}
+
+	/**
+	 * Set a logger.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  AudioTheme_Agent_Logger $logger Logger instance.
+	 * @return $this
+	 */
+	public function set_logger( $logger ) {
+		$this->logger = $logger;
+		$this->client->set_logger( $logger );
+		return $this;
 	}
 
 	/**
