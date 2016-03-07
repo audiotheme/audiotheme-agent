@@ -227,7 +227,7 @@ class AudioTheme_Agent_Client {
 			$token = $this->refresh_access_token();
 
 			if ( is_wp_error( $token ) ) {
-				$this->disconnect();
+				$this->deauthorize();
 				return $token;
 			}
 
@@ -235,7 +235,7 @@ class AudioTheme_Agent_Client {
 		 	return $this->request( $url, $args, $method, false );
 		} elseif ( ! $refresh && ( 400 === $status || 401 === $status ) ) {
 			// @todo If the refresh token is expired or the token has been revoked, disconnect?
-			$this->disconnect();
+			$this->deauthorize();
 		}
 
 		return $response;
@@ -280,7 +280,7 @@ class AudioTheme_Agent_Client {
 		}
 
 		if ( is_wp_error( $token ) ) {
-			$this->disconnect();
+			$this->deauthorize();
 			return $token;
 		}
 
@@ -350,7 +350,7 @@ class AudioTheme_Agent_Client {
 	 *
 	 * @return $this
 	 */
-	public function disconnect() {
+	public function deauthorize() {
 		// @todo Revoke the token remotely.
 		delete_option( self::TOKEN_OPTION_NAME );
 		return $this;
