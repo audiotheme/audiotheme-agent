@@ -14,13 +14,19 @@
 			<td><?php echo $client->is_registered() ? esc_html__( 'Yes', 'audiotheme-agent' ) : esc_html__( 'No', 'audiotheme-agent' ); ?></td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e( 'Authorized', 'audiotheme-agent' ); ?></th>
-			<td><?php echo $client->is_authorized() ? esc_html__( 'Yes', 'audiotheme-agent' ) : esc_html__( 'No', 'audiotheme-agent' ); ?></td>
-		</tr>
-		<tr>
 			<th scope="row"><?php esc_html_e( 'Client ID', 'audiotheme-agent' ); ?></th>
 			<td><?php echo empty( $metadata['client_id'] ) ? esc_html__( 'Not Registered', 'audiotheme-agent' ) : esc_html( $metadata['client_id'] ); ?></td>
 		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e( 'Authorized', 'audiotheme-agent' ); ?></th>
+			<td><?php echo $client->is_authorized() ? esc_html__( 'Yes', 'audiotheme-agent' ) : esc_html__( 'No', 'audiotheme-agent' ); ?></td>
+		</tr>
+		<?php if ( $client->is_authorized() ) : ?>
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Token Expiration', 'audiotheme-agent' ); ?></th>
+				<td><?php echo date( 'Y-m-d H:i:s', $token['expires_at'] ); ?></td>
+			</tr>
+		<?php endif; ?>
 		<tr>
 			<th scope="row"><?php esc_html_e( 'Identity Crisis', 'audiotheme-agent' ); ?></th>
 			<td><?php echo $client->has_identity_crisis() ? esc_html__( 'Yes', 'audiotheme-agent' ) : esc_html__( 'No', 'audiotheme-agent' ); ?></td>
