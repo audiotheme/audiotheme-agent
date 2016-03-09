@@ -49,9 +49,9 @@ class AudioTheme_Agent_Logger {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  string $level   Logger level.
-	 * @param  string $message Message.
-	 * @param  array  $context Data to interpolate into the message.
+	 * @param string $level   Logger level.
+	 * @param string $message Message.
+	 * @param array  $context Data to interpolate into the message.
 	 */
 	public function log( $level, $message, $context = array() ) {
 		if ( ! $this->is_debug_mode() && in_array( $level, array( 'debug', 'info' ) ) ) {

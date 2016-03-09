@@ -108,19 +108,6 @@ class AudioTheme_Agent_Client {
 	}
 
 	/**
-	 * Set a logger.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param  AudioTheme_Agent_Logger $logger Logger instance.
-	 * @return $this
-	 */
-	public function set_logger( $logger ) {
-		$this->logger = $logger;
-		return $this;
-	}
-
-	/**
 	 * Retrieve a package by its slug.
 	 *
 	 * @since 1.0.0
@@ -210,24 +197,28 @@ class AudioTheme_Agent_Client {
 	 * @return mixed
 	 */
 	public function request( $url, $args = array(), $method = 'GET', $refresh = true ) {
-		$args = $this->get_request_args( $args, $method );
-		if ( is_wp_error( $args ) ) {
-			return $args;
+		$parsed_args = $this->get_request_args( $args, $method );
+		if ( is_wp_error( $parsed_args ) ) {
+			return $parsed_args;
 		}
 
-		$response = $this->wp_remote_request( $url, $args );
+		$response = $this->wp_remote_request( $url, $parsed_args );
 		$status   = $this->wp_remote_retrieve_response_code( $response );
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
 		}
 
+		// Try to refresh the token once if there's a 401 error.
 		if ( $refresh && 401 === $status && $this->is_authorized() ) {
-			// Try to refresh the token if there's a 401 error.
+			$this->log( 'error', 'The server responded with an error. Status: {status}. Response: {error}', array(
+				'error'  => $response,
+				'status' => $status,
+			) );
+
 			$token = $this->refresh_access_token();
 
 			if ( is_wp_error( $token ) ) {
-				$this->logger->log( 'error', 'Refreshing invalid access token failed: {error}', array( 'error' => $token ) );
 				$this->deauthorize();
 				return $token;
 			}
@@ -235,8 +226,10 @@ class AudioTheme_Agent_Client {
 			$args['headers']['Authorization'] = 'Bearer ' . $token;
 		 	return $this->request( $url, $args, $method, false );
 		} elseif ( ! $refresh && ( 400 === $status || 401 === $status ) ) {
-			// @todo If the refresh token is expired or the token has been revoked, disconnect?
-			$this->logger->log( 'error', 'Refreshing access token failed: {error}', array( 'error' => $token ) );
+			$this->log( 'error', 'The server responded with an error: {error}', array(
+				'error' => $response,
+			) );
+
 			$this->deauthorize();
 		}
 
@@ -278,12 +271,17 @@ class AudioTheme_Agent_Client {
 
 		// Refresh the access token if it has expired.
 		if ( ! empty( $token ) && time() > (int) $this->get_grant_value( 'expires_at' ) ) {
+			$this->log( 'info', 'Refreshing expired access token.' );
 			$token = $this->refresh_access_token();
 		}
 
 		if ( is_wp_error( $token ) ) {
-			$this->logger->log( 'error', 'Refreshing expired access token failed: {error}', array( 'error' => $token ) );
+			$this->log( 'error', 'Error adding Authorization header token: {error}', array(
+				'error' => $token,
+			) );
+
 			$this->deauthorize();
+
 			return $token;
 		}
 
@@ -356,7 +354,7 @@ class AudioTheme_Agent_Client {
 	public function deauthorize() {
 		// @todo Revoke the token remotely.
 		delete_option( self::TOKEN_OPTION_NAME );
-		$this->logger->log( 'notice', 'Deauthorized the client.' );
+		$this->log( 'notice', 'Deauthorized the client.' );
 		return $this;
 	}
 
@@ -555,7 +553,9 @@ class AudioTheme_Agent_Client {
 		 */
 		update_option( self::CLIENT_OPTION_NAME, (array) $data );
 
-		$this->logger->log( 'notice', 'Updated client metadata.' );
+		$this->log( 'notice', 'Updated client metadata. Client ID: {client_id}.', array(
+			'client_id' => $this->get_client_id(),
+		) );
 
 		return $this;
 	}
@@ -781,7 +781,9 @@ class AudioTheme_Agent_Client {
 		 */
 		update_option( self::CLIENT_OPTION_NAME, (array) $data );
 
-		$this->logger->log( 'notice', 'Registered the client.' );
+		$this->log( 'notice', 'Registered the client. Client ID: {client_id}', array(
+			'client_id' => $this->get_client_id(),
+		) );
 
 		return $this;
 	}
@@ -837,12 +839,18 @@ class AudioTheme_Agent_Client {
 			$this->set_client_id( $data->register->client_id );
 			$this->set_client_secret( $data->register->client_secret );
 
-			$this->logger->log( 'notice', 'Registered the client with a subscription token.' );
+			$this->log( 'notice', 'Registered the client with a subscription token. Client ID: {client_id}. Token: {token}.', array(
+				'client_id' => $this->get_client_id(),
+				'token'     => $token,
+			) );
 		}
 
 		if ( ! empty( $data->authorize ) ) {
-			$token = $this->save_token( $data->authorize );
-			$this->logger->log( 'notice', 'Authorized the client with a subscription token.' );
+			$this->log( 'notice', 'Authorized the client with a subscription token. Token: {token}.', array(
+				'token' => $token,
+			) );
+
+			$this->save_token( $data->authorize );
 		}
 
 		return $this;
@@ -870,8 +878,15 @@ class AudioTheme_Agent_Client {
 			return new WP_Error( 'unknown_endpoint', 'Unknown client registration management URI.' );
 		}
 
+		$this->set_client_id( null );
+		$this->set_client_secret( null );
+
 		delete_option( AudioTheme_Agent_Client::CLIENT_OPTION_NAME );
 		delete_option( AudioTheme_Agent_Client::TOKEN_OPTION_NAME );
+
+		$this->log( 'notice', 'Unregistered the client. Client ID: {client_id}', array(
+			'client_id' => $metadata['client_id'],
+		) );
 
 		$response = $this->wp_remote_request( esc_url_raw( $metadata['registration_client_uri'] ), array(
 			'headers' => array(
@@ -883,10 +898,13 @@ class AudioTheme_Agent_Client {
 		$data = $this->parse_response( $response, 204 );
 
 		if ( is_wp_error( $data ) ) {
+			$this->log( 'notice', 'Client DELETE request failed. Client ID: {client_id}. Error: {error}', array(
+				'client_id' => $metadata['client_id'],
+				'error'     => $data,
+			) );
+
 			return $data;
 		}
-
-		$this->logger->log( 'notice', 'Unregistered the client.' );
 
 		return $this;
 	}
@@ -949,10 +967,14 @@ class AudioTheme_Agent_Client {
 		$token = $this->save_token( $this->parse_response( $response ) );
 
 		if ( is_wp_error( $token ) ) {
+			$this->log( 'error', 'Refreshing the access token failed: {error}', array(
+				'error' => $token,
+			) );
+
 			return $token;
 		}
 
-		$this->logger->log( 'info', 'Refreshed the access token.' );
+		$this->log( 'info', 'Refreshed the access token.' );
 
 		return $token->access_token;
 	}
@@ -1025,6 +1047,12 @@ class AudioTheme_Agent_Client {
 		}
 
 		if ( ! in_array( $status, $expected_status ) ) {
+			$this->log( 'error', 'Unexpected response code: {status}. Expected status: {expected_status}. Response: {response}', array(
+				'expected_status' => $expected_status,
+				'response'        => $content,
+				'status'          => $status,
+			) );
+
 			return new WP_Error( 'unexpected_status_code', esc_html__( 'An unexpected status code was returned by the remote server.', 'audiotheme-agent' ), array(
 				'body'   => $content,
 				'status' => $status,
@@ -1165,7 +1193,7 @@ class AudioTheme_Agent_Client {
 	 * @return mixed
 	 */
 	protected function wp_remote_request( $url, $args ) {
-		$this->logger->log( 'debug', 'Requested URL: {url}', array( 'url' => $url ) );
+		$this->log( 'debug', 'Requested URL: {url}', array( 'url' => $url ) );
 
 		return wp_remote_request( $url, $args );
 	}
@@ -1180,5 +1208,35 @@ class AudioTheme_Agent_Client {
 	 */
 	protected function wp_remote_retrieve_response_code( $response ) {
 		return wp_remote_retrieve_response_code( $response );
+	}
+
+	/**
+	 * Set a logger.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  AudioTheme_Agent_Logger $logger Logger instance.
+	 * @return $this
+	 */
+	public function set_logger( $logger ) {
+		$this->logger = $logger;
+		return $this;
+	}
+
+	/**
+	 * Log a message.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  string $level   Logger level.
+	 * @param  string $message Message.
+	 * @param  array  $context Data to interpolate into the message.
+	 * @return $this
+	 */
+	protected function log( $level, $message, $context = array() ) {
+		if ( $this->logger ) {
+			$this->logger->log( $level, $message, $context );
+		}
+		return $this;
 	}
 }
