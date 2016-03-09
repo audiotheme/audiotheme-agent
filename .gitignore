@@ -1,4 +1,5 @@
 .DS_Store
+coverage/
 dist/
 languages/audiotheme-agent.pot
 node_modules/

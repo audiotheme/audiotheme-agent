@@ -50,6 +50,17 @@ class ClientAuthorizationTest extends \WP_UnitTestCase {
 		$this->assertSame( 'access_denied', $result->get_error_code() );
 	}
 
+	public function test_callback_with_missing_code() {
+		$_GET = array(
+			'action' => 'authorize-audiotheme-agent',
+			'state'  => wp_create_nonce( 'authorize-client_' . get_current_user_id() ),
+		);
+
+		$result = $this->client->handle_callback();
+		$this->assertWPError( $result );
+		$this->assertSame( 'invalid_code', $result->get_error_code() );
+	}
+
 	public function test_callback_with_response_error() {
 		$_GET = array(
 			'action' => 'authorize-audiotheme-agent',

@@ -10,38 +10,9 @@ define( 'AUDIOTHEME_AGENT_TESTS_DIR', __DIR__ );
 
 /**
  * Load the WordPress tests.
- *
- * Checks to see if a test case in the unit test suite or the unit test suite
- * itself was specified. If not, loads the WordPress tests.
  */
-if ( 'unit' !== _get_test_suite() ) {
-	$_tests_directory = _locate_wordpress_tests_directory();
-	_load_wordpress_tests( $_tests_directory );
-}
-
-function _get_test_suite() {
-	$suite = '';
-
-	$opts = PHPUnit_Util_Getopt::getopt(
-		$GLOBALS['argv'],
-		'd:c:hv',
-		array( 'filter=', 'testsuite=' )
-	);
-
-	foreach ( $opts[0] as $opt ) {
-		if ( '--testsuite' === $opt[0] ) {
-			$suite = $opt[1];
-			break;
-		}
-
-		if ( '--filter' === $opt[0] && false !== stripos( $opt[1], 'unit' ) ) {
-			$suite = 'unit';
-			break;
-		}
-	}
-
-	return strtolower( $suite );
-}
+$_tests_directory = _locate_wordpress_tests_directory();
+_load_wordpress_tests( $_tests_directory );
 
 function _load_wordpress_tests( $tests_directory ) {
 	$GLOBALS['wp_tests_options'] = array(

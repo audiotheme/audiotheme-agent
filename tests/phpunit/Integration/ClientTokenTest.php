@@ -31,6 +31,8 @@ class ClientTokenTest extends \WP_UnitTestCase {
 		$option = get_option( AudioTheme_Agent_Client::TOKEN_OPTION_NAME );
 		$this->assertEqualFields( $token, $option );
 		$this->assertArrayHasKey( 'expires_at', $option );
+
+		$token = $this->client->save_token( $token );
 	}
 
 	public function test_save_token_with_missing_access_token() {
