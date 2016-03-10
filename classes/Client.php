@@ -962,6 +962,7 @@ class AudioTheme_Agent_Client {
 				'Content-Type'  => 'application/x-www-form-urlencoded',
 			),
 			'method'  => 'POST',
+			'timeout' => 10,
 		) );
 
 		$token = $this->save_token( $this->parse_response( $response ) );
