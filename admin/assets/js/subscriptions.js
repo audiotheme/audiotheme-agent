@@ -260,6 +260,10 @@
 			this.$spinner = $( '<span class="spinner" />' );
 			this.$el.html( this.template( _.extend( this.model.toJSON(), {
 				nextPaymentDate: function( dateString ) {
+					if ( ! dateString ) {
+						return '';
+					}
+
 					return dateString.match( /[0-9]{4}-[0-9]{2}-[0-9]{2}/ ).pop();
 				}
 			} ) ) );
