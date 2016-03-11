@@ -9,7 +9,7 @@
  * @wordpress-plugin
  * Plugin Name: AudioTheme Agent
  * Plugin URI:  https://audiotheme.com/
- * Description: Priority support and automatic updates for AudioTheme.com premium themes and plugins.
+ * Description: Connect to AudioTheme.com to directly install premium themes and plugins, automatically update installed products, manage your subscriptions, and receive priority support.
  * Version:     1.0.0
  * Author:      AudioTheme
  * Author URI:  https://audiotheme.com/
