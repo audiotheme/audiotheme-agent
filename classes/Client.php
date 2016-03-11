@@ -1196,6 +1196,12 @@ class AudioTheme_Agent_Client {
 	protected function wp_remote_request( $url, $args ) {
 		$this->log( 'debug', 'Requested URL: {url}', array( 'url' => $url ) );
 
+		$args['user-agent'] = sprintf(
+			'AudioTheme Agent/%s; %s',
+			AUDIOTHEME_AGENT_VERSION,
+			esc_url_raw( get_bloginfo( 'url' ) )
+		);
+
 		return wp_remote_request( $url, $args );
 	}
 
