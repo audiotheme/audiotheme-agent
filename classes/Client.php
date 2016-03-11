@@ -280,7 +280,10 @@ class AudioTheme_Agent_Client {
 				'error' => $token,
 			) );
 
-			$this->deauthorize();
+			// Don't automatically deauthorize for server errors.
+			if ( 'server_error' !== $token->get_error_code() ) {
+				$this->deauthorize();
+			}
 
 			return $token;
 		}
@@ -965,6 +968,15 @@ class AudioTheme_Agent_Client {
 			'timeout' => 10,
 		) );
 
+		$status = $this->wp_remote_retrieve_response_code( $response );
+		if ( 500 <= $status && 599 >= $status ) {
+			$this->log( 'error', 'Refreshing the access token failed due to a server error. Status: {status}', array(
+				'status' => $status,
+			) );
+
+			return new WP_Error( 'server_error', 'An error occurred on the server.', array( 'status' => $status ) );
+		}
+
 		$token = $this->save_token( $this->parse_response( $response ) );
 
 		if ( is_wp_error( $token ) ) {
@@ -1054,7 +1066,12 @@ class AudioTheme_Agent_Client {
 				'status'          => $status,
 			) );
 
-			return new WP_Error( 'unexpected_status_code', esc_html__( 'An unexpected status code was returned by the remote server.', 'audiotheme-agent' ), array(
+			$message = sprintf(
+				esc_html__( 'An unexpected status code was returned by the remote server. Status: %d', 'audiotheme-agent' ),
+				$status
+			);
+
+			return new WP_Error( 'unexpected_status', $message, array(
 				'body'   => $content,
 				'status' => $status,
 			) );

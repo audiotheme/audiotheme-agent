@@ -59,7 +59,7 @@ class ClientResponseTest extends \WP_UnitTestCase {
 		$result = $this->client->parse_response( $response );
 
 		$this->assertWPError( $result );
-		$this->assertSame( 'unexpected_status_code', $result->get_error_code() );
+		$this->assertSame( 'unexpected_status', $result->get_error_code() );
 	}
 
 	public function test_maybe_decode_json_with_array() {

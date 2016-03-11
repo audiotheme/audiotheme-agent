@@ -89,6 +89,20 @@ class ClientRequestTest extends \WP_UnitTestCase {
 		$this->assertWPError( $response );
 	}
 
+	public function test_authenticated_request_with_expired_access_token_and_server_error_when_refreshing() {
+		$token = get_option( AudioTheme_Agent_Client::TOKEN_OPTION_NAME );
+		$token['expires_at'] = time() - 3600;
+		update_option( AudioTheme_Agent_Client::TOKEN_OPTION_NAME, $token );
+
+		$this->client->expects( $this->exactly( 0 ) )->method( 'deauthorize' );
+		$this->client->expects( $this->exactly( 1 ) )->method( 'refresh_access_token' )->willReturn( new WP_Error( 'server_error' ) );
+		$this->client->expects( $this->exactly( 0 ) )->method( 'wp_remote_request' );
+
+		$response = $this->client->request( 'https://example.com/api/v1/protected' );
+
+		$this->assertWPError( $response );
+	}
+
 	public function test_authenticated_request_with_401_response_code() {
 		$this->client = $this->getMockBuilder( '\AudioTheme_Agent_Client' )
 			->setMethods( array( 'deauthorize', 'refresh_access_token', 'wp_remote_request', 'wp_remote_retrieve_response_code' ) )
