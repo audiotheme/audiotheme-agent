@@ -7,6 +7,7 @@ module.exports = {
 			{
 				src: [
 					'**',
+					'!coverage/**',
 					'!config/**',
 					'!dist/**',
 					'!node_modules/**',
@@ -16,7 +17,7 @@ module.exports = {
 					'!.esformatter',
 					'!.gitignore',
 					'!composer.*',
-					'!gruntfile.js',
+					'!Gruntfile.js',
 					'!package.json',
 					'!phpcs.log',
 					'!phpcs.xml',
