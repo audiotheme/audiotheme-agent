@@ -876,8 +876,8 @@ class AudioTheme_Agent_Client {
 		$this->set_client_id( null );
 		$this->set_client_secret( null );
 
-		delete_option( AudioTheme_Agent_Client::CLIENT_OPTION_NAME );
-		delete_option( AudioTheme_Agent_Client::TOKEN_OPTION_NAME );
+		delete_option( self::CLIENT_OPTION_NAME );
+		delete_option( self::TOKEN_OPTION_NAME );
 
 		$this->log( 'notice', 'Unregistered the client. Client ID: {client_id}', array(
 			'client_id' => $metadata['client_id'],

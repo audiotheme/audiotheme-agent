@@ -90,7 +90,7 @@ class AudioTheme_Agent_Screen_Main_Subscriptions extends AudioTheme_Agent_Screen
 	 */
 	protected function add_help_tab() {
 		$client   = $this->plugin->client;
-		$token    = get_option( $client::TOKEN_OPTION_NAME );
+		$token    = get_option( AudioTheme_Agent_Client::TOKEN_OPTION_NAME );
 		$metadata = $client->get_registered_metadata();
 
 		$disconnect_url = add_query_arg( array(
