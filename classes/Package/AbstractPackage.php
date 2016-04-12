@@ -81,6 +81,16 @@ abstract class AudioTheme_Agent_Package_AbstractPackage implements AudioTheme_Ag
 	protected $installed_version = '';
 
 	/**
+	 * Maximum WordPress version (tested up to).
+	 *
+	 * Used for reporting compatibility when an upgrade is available.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	protected $maximum_wordpress_version = '';
+
+	/**
 	 * Whether the package is viewable.
 	 *
 	 * @since 1.0.0
@@ -260,6 +270,30 @@ abstract class AudioTheme_Agent_Package_AbstractPackage implements AudioTheme_Ag
 	}
 
 	/**
+	 * Retrieve maximum WordPress version (tested up to).
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	public function get_maximum_wordpress_version() {
+		return $this->maximum_wordpress_version;
+	}
+
+	/**
+	 * Set the maximum WordPress version (tested up to).
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  string $version Version.
+	 * @return $this
+	 */
+	public function set_maximum_wordpress_version( $version ) {
+		$this->maximum_wordpress_version = $version;
+		return $this;
+	}
+
+	/**
 	 * Retrieve the name.
 	 *
 	 * @since 1.0.0
@@ -353,21 +387,22 @@ abstract class AudioTheme_Agent_Package_AbstractPackage implements AudioTheme_Ag
 	 */
 	public function to_array() {
 		return array(
-			'slug'              => $this->get_slug(),
-			'name'              => $this->get_name(),
-			'changelog_url'     => $this->get_changelog_url(),
-			'current_version'   => $this->get_current_version(),
-			'homepage'          => $this->get_homepage(),
-			'is_installed'      => $this->is_installed(),
-			'install_nonce'     => wp_create_nonce( 'install-package_' . $this->get_slug() ),
-			'installed_version' => $this->get_installed_version(),
-			'type'              => $this->get_type(),
-			'type_label'        => $this->get_type_label(),
-			'action_button'     => $this->get_action_button(),
-			'is_active'         => $this->is_active(),
-			'is_viewable'       => $this->is_viewable(),
-			'has_access'        => $this->has_download_url(),
-			'has_update'        => $this->is_update_available(),
+			'slug'                      => $this->get_slug(),
+			'name'                      => $this->get_name(),
+			'changelog_url'             => $this->get_changelog_url(),
+			'current_version'           => $this->get_current_version(),
+			'homepage'                  => $this->get_homepage(),
+			'is_installed'              => $this->is_installed(),
+			'install_nonce'             => wp_create_nonce( 'install-package_' . $this->get_slug() ),
+			'installed_version'         => $this->get_installed_version(),
+			'type'                      => $this->get_type(),
+			'type_label'                => $this->get_type_label(),
+			'action_button'             => $this->get_action_button(),
+			'is_active'                 => $this->is_active(),
+			'is_viewable'               => $this->is_viewable(),
+			'has_access'                => $this->has_download_url(),
+			'has_update'                => $this->is_update_available(),
+			'maximum_wordpress_version' => $this->get_maximum_wordpress_version(),
 		);
 	}
 
@@ -383,6 +418,7 @@ abstract class AudioTheme_Agent_Package_AbstractPackage implements AudioTheme_Ag
 			'changelog_url',
 			'download_url',
 			'homepage',
+			'maximum_wordpress_version',
 			'name',
 			'slug',
 		);

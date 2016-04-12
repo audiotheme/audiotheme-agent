@@ -120,6 +120,7 @@ class AudioTheme_Agent_Provider_UpdateManager extends AudioTheme_Agent_AbstractP
 				'plugin'      => $package->get_file(),
 				'new_version' => $package->get_current_version(),
 				'url'         => $package->get_homepage(),
+				'tested'      => $package->get_maximum_wordpress_version(),
 			);
 
 			// Add the package zip URL if available.
