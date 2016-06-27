@@ -19,7 +19,16 @@ if ( $client->has_identity_crisis() ) {
 			<th class="column-action">&nbsp;</th>
 		</tr>
 	</thead>
-	<tbody></tbody>
+	<tbody><?php
+		if ( $client->is_registered() && ! $client->is_authorized() ) : ?>
+				<tr>
+					<td colspan="4" style="background-color: #fbeaea">
+						<?php esc_html_e( 'Your site has been disconnected. Please reconnect to continue receiving updates and support.', 'cuepro' ); ?>
+					</td>
+				</tr>
+			<?php
+		endif;
+	?></tbody>
 	<tfoot>
 		<tr>
 			<td colspan="4">
