@@ -66,6 +66,7 @@ class AudioTheme_Agent_PackageManager {
 		'audiotheme',
 		'audiotheme-agent',
 		'cuebar',
+		'cuepro',
 	);
 
 	/**
