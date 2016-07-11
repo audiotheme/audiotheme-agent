@@ -21,6 +21,7 @@ class AudioTheme_Agent_Provider_AJAX extends AudioTheme_Agent_AbstractProvider {
 	 * @since 1.0.0
 	 */
 	public function register_hooks() {
+		add_action( 'wp_ajax_audiotheme_agent_create_child_theme',      array( $this, 'create_child_theme' ) );
 		add_action( 'wp_ajax_audiotheme_agent_install_package',         array( $this, 'install_package' ) );
 		add_action( 'wp_ajax_audiotheme_agent_subscribe',               array( $this, 'subscribe' ) );
 		add_action( 'wp_ajax_audiotheme_agent_disconnect_subscription', array( $this, 'disconnect_subscription' ) );
@@ -109,6 +110,14 @@ class AudioTheme_Agent_Provider_AJAX extends AudioTheme_Agent_AbstractProvider {
 			wp_send_json_error( $status );
 		}
 
+		if ( 'plugin' === $package->get_type() && ! current_user_can( 'install_plugins' ) ) {
+			$status['message'] = esc_html__( 'Sorry, you are not allowed to install plugins on this site.' );
+			wp_send_json_error( $status );
+		} elseif ( 'theme' === $package->get_type() && ! current_user_can( 'install_themes' ) ) {
+			$status['message'] = esc_html__( 'Sorry, you are not allowed to install themes on this site.' );
+			wp_send_json_error( $status );
+		}
+
 		$result = $package->install();
 
 		if ( is_wp_error( $result ) ) {
@@ -120,6 +129,37 @@ class AudioTheme_Agent_Provider_AJAX extends AudioTheme_Agent_AbstractProvider {
 			wp_send_json_error( $status );
 		}
 
+		$status['package'] = $package->to_array();
+
+		wp_send_json_success( $status );
+	}
+
+	/**
+	 * Create a child theme.
+	 *
+	 * @since 1.1.0
+	 */
+	public function create_child_theme() {
+		$slug   = sanitize_key( $_POST['slug'] );
+		$status = array( 'slug' => $slug );
+
+		check_ajax_referer( 'create-child-theme_' . $slug, 'nonce' );
+
+		if ( ! current_user_can( 'install_themes' ) ) {
+			$status['message'] = esc_html__( 'Sorry, you are not allowed to install themes on this site.' );
+			wp_send_json_error( $status );
+		}
+
+		$generator = new AudioTheme_Agent_Generator_ChildTheme( $slug );
+		$result = $generator->generate();
+
+		if ( is_wp_error( $result ) ) {
+			$status['code']    = $result->get_error_code();
+			$status['message'] = $result->get_error_message();
+			wp_send_json_error( $status );
+		}
+
+		$package = $this->plugin->packages->get_package( $slug );
 		$status['package'] = $package->to_array();
 
 		wp_send_json_success( $status );

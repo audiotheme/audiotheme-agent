@@ -74,6 +74,7 @@
 
 .audiotheme-agent-table tbody td.column-action .spinner {
 	float: none;
+	margin-top: 0;
 }
 
 
@@ -182,4 +183,92 @@
 .audiotheme-agent-help-table th {
 	padding-right: 20px;
 	text-align: left;
+}
+
+
+/* Dropdown Group
+-------------------------------------------------------------- */
+
+.audiotheme-agent-dropdown-group {
+	display: inline-flex;
+	position: relative;
+}
+
+.audiotheme-agent-dropdown-group > .button {
+	position: relative;
+	z-index: 2;
+}
+
+.audiotheme-agent-dropdown-group > .button:first-child {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	border-right-width: 0;
+}
+
+.audiotheme-agent-dropdown-group > .audiotheme-agent-dropdown-toggle {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	padding-left: 0;
+	padding-right: 0;
+	position: relative;
+}
+
+.audiotheme-agent-dropdown-group > .audiotheme-agent-dropdown-toggle i {
+	margin: 3px 0 3px 0;
+	padding: 0 5px;
+}
+
+.audiotheme-agent-dropdown-group-items {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	-webkit-box-shadow: 1px 0 4px rgba( 0, 0, 0, 0.15 );
+	box-shadow: 1px 0 4px rgba( 0, 0, 0, 0.15 );
+	display: none;
+	list-style: none;
+	margin: 0;
+	max-width: 100%;
+	min-width: 180px;
+	padding: 5px 0;
+	position: absolute;
+	top: 100%;
+	right: 0;
+	left: auto;
+	z-index: 1;
+}
+
+.audiotheme-agent-dropdown-group-items li {
+	display: block;
+	line-height: 2;
+	margin: 0;
+	padding: 5px 15px;
+	text-align: left;
+}
+
+.audiotheme-agent-dropdown-group-items li a {
+	display: block;
+	margin: -5px -15px;
+	padding: 5px 15px;
+	text-decoration: none;
+}
+
+.audiotheme-agent-dropdown-group-items li a:hover {
+	background-color: #f8f8f8;
+}
+
+.audiotheme-agent-dropdown-group-items ul {
+	margin: 0;
+}
+
+.audiotheme-agent-dropdown-group.is-open {
+	z-index: 10;
+}
+
+.audiotheme-agent-dropdown-group.is-open > .button {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+	border-bottom-width: 0;
+}
+
+.audiotheme-agent-dropdown-group.is-open .audiotheme-agent-dropdown-group-items {
+	display: block;
 }

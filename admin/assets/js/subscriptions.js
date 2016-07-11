@@ -20,6 +20,18 @@
 			subscriptions: null
 		},
 
+		createChildTheme: function( slug ) {
+			var self = this,
+				model = this.get( 'packages' ).get( slug );
+
+			return wp.ajax.post( 'audiotheme_agent_create_child_theme', {
+				nonce: model.get( 'child_theme_nonce' ),
+				slug: model.get( 'slug' )
+			}).done(function( response ) {
+				self.get( 'packages' ).add( response.package, { merge: true });
+			});
+		},
+
 		install: function( slug ) {
 			var self = this,
 				model = this.get( 'packages' ).get( slug );
@@ -165,7 +177,8 @@
 		template: wp.template( 'audiotheme-agent-packages-table-row' ),
 
 		events: {
-			'click .js-install': 'installPackage'
+			'click .js-install': 'installPackage',
+			'click .js-create-child': 'createChildTheme'
 		},
 
 		initialize: function( options ) {
@@ -193,6 +206,24 @@
 			}
 
 			return this;
+		},
+
+		createChildTheme: function( e ) {
+			var $column = $( e.target ).closest( '.column-action' ),
+				$buttons = $column.find( 'button, .button' ).prop( 'disabled', true ).addClass( 'button-disabled' );
+
+			e.preventDefault();
+
+			$column.find( '.button' ).first().text( 'Creating child theme...' );
+			$column.prepend( this.$spinner.addClass( 'is-active' ) );
+
+			this.controller.createChildTheme( this.model.get( 'slug' ) )
+				.fail(function( response ) {
+					if ( 'message' in response ) {
+						$column.append( '<span class="error-message" />' )
+							.find( '.error-message' ).text( response.message );
+					}
+				});
 		},
 
 		installPackage: function( e ) {
@@ -390,5 +421,19 @@
 		e.preventDefault();
 		$( '#contextual-help-link' ).click();
 	});
+
+	$( document )
+		.on( 'click', '.audiotheme-agent-dropdown-toggle', function( e ) {
+			e.preventDefault();
+			$( this ).closest( '.audiotheme-agent-dropdown-group' ).toggleClass( 'is-open' );
+		})
+		.on( 'click', function( e ) {
+			if ( ! $( e.target ).closest( 'button' ).hasClass( 'audiotheme-agent-dropdown-toggle' ) ) {
+				$( '.audiotheme-agent-dropdown-group' ).removeClass( 'is-open' );
+			} else {
+				var $group = $( e.target ).closest( '.audiotheme-agent-dropdown-group' );
+				$( '.audiotheme-agent-dropdown-group' ).not( $group ).removeClass( 'is-open' )
+			}
+		});
 
 })( window, jQuery, _, Backbone, wp );

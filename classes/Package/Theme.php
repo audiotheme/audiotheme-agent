@@ -28,7 +28,7 @@ class AudioTheme_Agent_Package_Theme extends AudioTheme_Agent_Package_AbstractPa
 			return false;
 		}
 
-		return get_stylesheet() === $this->get_slug();
+		return get_stylesheet() === $this->get_slug() || get_template() === $this->get_slug();
 	}
 
 	/**
@@ -80,11 +80,33 @@ class AudioTheme_Agent_Package_Theme extends AudioTheme_Agent_Package_AbstractPa
 				esc_html__( 'Install Now', 'audiotheme-agent' )
 			);
 		} elseif ( $this->is_installed() && ! is_multisite() ) {
-			$html = sprintf(
-				'<a href="%s" class="button">%s</a>',
-				esc_url( esc_url( $this->get_customizer_url( array( 'theme' => $this->get_slug() ) ) ) ),
-				esc_html__( 'Preview', 'audiotheme-agent' )
-			);
+			if ( ! current_user_can( 'install_themes' ) ) {
+				$html = $this->get_preview_button();
+			} else {
+				ob_start();
+				?>
+				<div class="audiotheme-agent-dropdown-group">
+					<?php echo $this->get_preview_button(); ?>
+
+					<button class="button audiotheme-agent-dropdown-toggle"><i class="dashicons dashicons-arrow-down"></i></button>
+
+					<div class="audiotheme-agent-dropdown-group-items">
+						<ul>
+							<?php if ( ! $this->child_exists( $this->get_slug() ) ) : ?>
+								<li>
+									<a href="#" class="js-create-child" data-slug="<?php echo esc_attr( $this->get_slug() ); ?>"><?php esc_html_e( 'Create Child Theme', 'audiotheme-agent' ); ?></a>
+								</li>
+							<?php else : ?>
+								<li>
+									<a href="<?php echo esc_url( esc_url( $this->get_customizer_url( array( 'theme' => $this->get_child_slug() ) ) ) ); ?>"><?php esc_html_e( 'Preview Child Theme', 'audiotheme-agent' ); ?></a>
+								</li>
+							<?php endif; ?>
+						</ul>
+					</div>
+				</div>
+				<?php
+				$html = ob_get_clean();
+			}
 		} elseif ( $this->is_installed() && is_multisite() ) {
 			$html = sprintf( '<span class="button button-disabled">%s</span>', esc_html__( 'Installed', 'audiotheme-agent' ) );
 		}
@@ -117,6 +139,19 @@ class AudioTheme_Agent_Package_Theme extends AudioTheme_Agent_Package_AbstractPa
 	}
 
 	/**
+	 * Retrieve the package as an array.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array
+	 */
+	public function to_array() {
+		$data = parent::to_array();
+		$data['child_theme_nonce'] = wp_create_nonce( 'create-child-theme_' . $this->get_slug() );
+		return $data;
+	}
+
+	/**
 	 * Retrieve a URL to the Customizer.
 	 *
 	 * @since 1.0.0
@@ -130,5 +165,44 @@ class AudioTheme_Agent_Package_Theme extends AudioTheme_Agent_Package_AbstractPa
 		) );
 
 		return add_query_arg( $args, admin_url( 'customize.php' ) );
+	}
+
+	/**
+	 * Retrieve preview button HTML.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	protected function get_preview_button() {
+		return sprintf(
+			'<a href="%s" class="button">%s</a>',
+			esc_url( esc_url( $this->get_customizer_url( array( 'theme' => $this->get_slug() ) ) ) ),
+			esc_html__( 'Preview', 'audiotheme-agent' )
+		);
+	}
+
+	/**
+	 * Retrieve a child theme slug.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	protected function get_child_slug() {
+		$parts = explode( '/', $this->get_slug() );
+		return sprintf( '%s-child', reset( $parts ) );
+	}
+
+	/**
+	 * Whether a child theme exists.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @param  string $slug Parent theme slug.
+	 * @return boolean
+	 */
+	protected function child_exists( $slug ) {
+		return wp_get_theme( $this->get_child_slug() )->exists();
 	}
 }

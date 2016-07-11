@@ -13,7 +13,7 @@ module.exports = {
 			jshintrc: 'config/.jshintnoderc'
 		},
 		src: [
-			'gruntfile.js',
+			'Gruntfile.js',
 			'shipitfile.js',
 			'config/grunt/*.js'
 		]
