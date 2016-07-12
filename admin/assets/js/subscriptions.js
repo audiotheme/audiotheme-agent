@@ -209,7 +209,8 @@
 		},
 
 		createChildTheme: function( e ) {
-			var $column = $( e.target ).closest( '.column-action' ),
+			var $row = $( e.target ).closest( 'tr' ),
+				$column = $( e.target ).closest( '.column-action' ),
 				$buttons = $column.find( 'button, .button' ).prop( 'disabled', true ).addClass( 'button-disabled' );
 
 			e.preventDefault();
@@ -223,6 +224,9 @@
 						$column.append( '<span class="error-message" />' )
 							.find( '.error-message' ).text( response.message );
 					}
+				})
+				.done(function() {
+					$row.find( '.audiotheme-agent-dropdown-toggle' ).click();
 				});
 		},
 
@@ -232,7 +236,7 @@
 
 			e.preventDefault();
 
-			$button.before( this.$spinner.addClass( 'is-active' ) );
+			$column.prepend( this.$spinner.addClass( 'is-active' ) );
 
 			this.controller.install( this.model.get( 'slug' ) )
 				.fail(function( response ) {
