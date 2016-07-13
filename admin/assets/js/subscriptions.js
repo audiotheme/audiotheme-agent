@@ -210,8 +210,7 @@
 
 		createChildTheme: function( e ) {
 			var $row = $( e.target ).closest( 'tr' ),
-				$column = $( e.target ).closest( '.column-action' ),
-				$buttons = $column.find( 'button, .button' ).prop( 'disabled', true ).addClass( 'button-disabled' );
+				$column = $( e.target ).closest( '.column-action' );
 
 			e.preventDefault();
 
@@ -436,7 +435,7 @@
 				$( '.audiotheme-agent-dropdown-group' ).removeClass( 'is-open' );
 			} else {
 				var $group = $( e.target ).closest( '.audiotheme-agent-dropdown-group' );
-				$( '.audiotheme-agent-dropdown-group' ).not( $group ).removeClass( 'is-open' )
+				$( '.audiotheme-agent-dropdown-group' ).not( $group ).removeClass( 'is-open' );
 			}
 		});
 
