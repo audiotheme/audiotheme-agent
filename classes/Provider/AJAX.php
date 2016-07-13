@@ -45,9 +45,15 @@ class AudioTheme_Agent_Provider_AJAX extends AudioTheme_Agent_AbstractProvider {
 		$result = $client->subscribe( $token );
 
 		if ( is_wp_error( $result ) ) {
+			$message = sprintf( esc_html__( 'Error: %s', 'audiotheme-agent' ), $result->get_error_message() );
+
+			if ( 'rest_invalid_param' === $result->get_error_code() && false !== strpos( $result->get_error_message(), 'client_name' ) ) {
+				$message = esc_html__( 'Error: Your site title must not be blank.', 'audiotheme-agent' );
+			}
+
 			wp_send_json_error( array(
 				'code'    => $result->get_error_code(),
-				'message' => sprintf( esc_html__( 'Error: %s', 'audiotheme-agent' ), $result->get_error_message() ),
+				'message' => $message,
 			) );
 		}
 
