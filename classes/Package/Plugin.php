@@ -97,14 +97,23 @@ class AudioTheme_Agent_Package_Plugin extends AudioTheme_Agent_Package_AbstractP
 	public function get_action_button() {
 		$html = '';
 
-		if ( $this->is_installed() && $this->is_active() ) {
-			$html = sprintf( '<span class="button button-disabled">%s</span>', esc_html__( 'Installed', 'audiotheme-agent' ) );
-		} elseif ( $this->is_installed() && ! $this->is_active() && current_user_can( 'activate_plugins' ) ) {
-			$html = sprintf(
-				'<a href="%s" class="button">%s</a>',
-				esc_url( $this->get_activation_url() ),
-				is_network_admin() ? esc_html__( 'Network Activate', 'audiotheme-agent' ) : esc_html__( 'Activate', 'audiotheme-agent' )
-			);
+		if ( $this->is_installed() ) {
+			ob_start();
+			?>
+			<div class="audiotheme-agent-dropdown-group">
+				<?php echo $this->get_activate_button(); ?>
+
+				<button class="button audiotheme-agent-dropdown-toggle"><i class="dashicons dashicons-arrow-down"></i></button>
+
+				<div class="audiotheme-agent-dropdown-group-items">
+					<ul>
+						<li><a href="<?php echo esc_url( sprintf( 'https://audiotheme.com/support/%s/', $this->get_slug() ) ); ?>" target="_blank"><?php esc_html_e( 'View Documentation', 'audiotheme-agent' ); ?></a></li>
+						<li><a href="<?php echo esc_url( sprintf( 'https://audiotheme.com/view/%s/changelog/', $this->get_slug() ) ); ?>" target="_blank"><?php esc_html_e( 'View Changelog', 'audiotheme-agent' ); ?></a></li>
+					</ul>
+				</div>
+			</div>
+			<?php
+			$html = ob_get_clean();
 		} elseif ( ! $this->is_installed() && current_user_can( 'install_plugins' ) && $this->has_download_url() ) {
 			$html = sprintf(
 				'<a href="%s" class="button js-install" data-slug="%s">%s</a>',
@@ -170,5 +179,26 @@ class AudioTheme_Agent_Package_Plugin extends AudioTheme_Agent_Package_AbstractP
 			),
 			'activate-plugin_' . $this->get_file()
 		);
+	}
+
+	/**
+	 * Retrieve activate button HTML.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return string
+	 */
+	protected function get_activate_button() {
+		if ( $this->is_active() || ! current_user_can( 'activate_plugins' ) ) {
+			$html = sprintf( '<span class="button button-disabled">%s</span>', esc_html__( 'Installed', 'audiotheme-agent' ) );
+		} elseif ( ! $this->is_active() && current_user_can( 'activate_plugins' ) ) {
+			$html = sprintf(
+				'<a href="%s" class="button">%s</a>',
+				esc_url( $this->get_activation_url() ),
+				is_network_admin() ? esc_html__( 'Network Activate', 'audiotheme-agent' ) : esc_html__( 'Activate', 'audiotheme-agent' )
+			);
+		}
+
+		return $html;
 	}
 }

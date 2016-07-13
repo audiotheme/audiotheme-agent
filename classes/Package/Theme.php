@@ -66,10 +66,7 @@ class AudioTheme_Agent_Package_Theme extends AudioTheme_Agent_Package_AbstractPa
 	public function get_action_button() {
 		$html = '';
 
-		if ( $this->is_active() ) {
-			// @todo Is an update available?
-			$html = sprintf( '<span class="button button-disabled">%s</span>', esc_html__( 'Active', 'audiotheme-agent' ) );
-		} elseif ( ! $this->is_installed() && file_exists( get_theme_root() . '/' . $this->get_slug() ) ) {
+		if ( ! $this->is_installed() && file_exists( get_theme_root() . '/' . $this->get_slug() ) ) {
 			// Directory exists, don't overwrite.
 			$html = sprintf( '<span class="error-message">%s</span>', esc_html__( 'Theme directory exists.', 'audiotheme-agent' ) );
 		} elseif ( ! $this->is_installed() && current_user_can( 'install_themes' ) && $this->has_download_url() ) {
@@ -80,39 +77,38 @@ class AudioTheme_Agent_Package_Theme extends AudioTheme_Agent_Package_AbstractPa
 				esc_html__( 'Install Now', 'audiotheme-agent' )
 			);
 		} elseif ( $this->is_installed() ) {
-			if ( ! current_user_can( 'install_themes' ) ) {
-				$html = $this->get_preview_button();
-			} else {
-				ob_start();
-				?>
-				<div class="audiotheme-agent-dropdown-group">
-					<?php echo $this->get_preview_button(); ?>
+			ob_start();
+			?>
+			<div class="audiotheme-agent-dropdown-group">
+				<?php echo $this->get_preview_button(); ?>
 
-					<button class="button audiotheme-agent-dropdown-toggle"><i class="dashicons dashicons-arrow-down"></i></button>
+				<button class="button audiotheme-agent-dropdown-toggle"><i class="dashicons dashicons-arrow-down"></i></button>
 
-					<div class="audiotheme-agent-dropdown-group-items">
-						<ul>
-							<?php if ( ! $this->child_exists() ) : ?>
-								<li>
-									<a href="#" class="js-create-child" data-slug="<?php echo esc_attr( $this->get_slug() ); ?>"><?php esc_html_e( 'Create Child Theme', 'audiotheme-agent' ); ?></a>
-								</li>
-							<?php elseif ( ! is_multisite() ) : ?>
-								<li>
-									<a href="<?php echo esc_url( $this->get_customizer_url( array( 'theme' => $this->get_child_slug() ) ) ); ?>"><?php esc_html_e( 'Preview Child Theme', 'audiotheme-agent' ); ?></a>
-								</li>
-							<?php endif; ?>
+				<div class="audiotheme-agent-dropdown-group-items">
+					<ul>
+						<li><a href="<?php echo esc_url( sprintf( 'https://audiotheme.com/support/%s/', $this->get_slug() ) ); ?>" target="_blank"><?php esc_html_e( 'View Documentation', 'audiotheme-agent' ); ?></a></li>
+						<li><a href="<?php echo esc_url( sprintf( 'https://audiotheme.com/view/%s/changelog/', $this->get_slug() ) ); ?>" target="_blank"><?php esc_html_e( 'View Changelog', 'audiotheme-agent' ); ?></a></li>
 
-							<?php if ( $this->child_exists() ) : ?>
-								<li>
-									<a href="<?php echo esc_url( $this->get_editor_url( array( 'theme' => $this->get_child_slug() ) ) ); ?>"><?php esc_html_e( 'Edit Child Theme', 'audiotheme-agent' ); ?></a>
-								</li>
-							<?php endif; ?>
-						</ul>
-					</div>
+						<?php if ( ! $this->child_exists() && current_user_can( 'install_themes' ) ) : ?>
+							<li>
+								<a href="#" class="js-create-child" data-slug="<?php echo esc_attr( $this->get_slug() ); ?>"><?php esc_html_e( 'Create Child Theme', 'audiotheme-agent' ); ?></a>
+							</li>
+						<?php elseif ( $this->child_exists() && ! is_multisite() ) : ?>
+							<li>
+								<a href="<?php echo esc_url( $this->get_customizer_url( array( 'theme' => $this->get_child_slug() ) ) ); ?>"><?php esc_html_e( 'Preview Child Theme', 'audiotheme-agent' ); ?></a>
+							</li>
+						<?php endif; ?>
+
+						<?php if ( $this->child_exists() && current_user_can( 'edit_themes' ) ) : ?>
+							<li>
+								<a href="<?php echo esc_url( $this->get_editor_url( array( 'theme' => $this->get_child_slug() ) ) ); ?>"><?php esc_html_e( 'Edit Child Theme', 'audiotheme-agent' ); ?></a>
+							</li>
+						<?php endif; ?>
+					</ul>
 				</div>
-				<?php
-				$html = ob_get_clean();
-			}
+			</div>
+			<?php
+			$html = ob_get_clean();
 		}
 
 		return $html;
@@ -201,7 +197,9 @@ class AudioTheme_Agent_Package_Theme extends AudioTheme_Agent_Package_AbstractPa
 	 * @return string
 	 */
 	protected function get_preview_button() {
-		if ( is_multisite() ) {
+		if ( $this->is_active() ) {
+			$html = sprintf( '<span class="button button-disabled">%s</span>', esc_html__( 'Active', 'audiotheme-agent' ) );
+		} elseif ( is_multisite() ) {
 			$html = sprintf( '<span class="button button-disabled">%s</span>', esc_html__( 'Installed', 'audiotheme-agent' ) );
 		} else {
 			$html = sprintf(
