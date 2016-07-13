@@ -23,7 +23,7 @@ if ( $client->has_identity_crisis() ) {
 		if ( $client->is_registered() && ! $client->is_authorized() ) : ?>
 				<tr>
 					<td colspan="4" style="background-color: #fbeaea">
-						<?php esc_html_e( 'Your site has been disconnected. Please reconnect to continue receiving updates and support.', 'cuepro' ); ?>
+						<?php esc_html_e( 'Your site has been disconnected. Please reconnect to continue receiving updates and support.', 'audiotheme-agent' ); ?>
 					</td>
 				</tr>
 			<?php

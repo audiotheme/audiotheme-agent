@@ -111,10 +111,10 @@ class AudioTheme_Agent_Provider_AJAX extends AudioTheme_Agent_AbstractProvider {
 		}
 
 		if ( 'plugin' === $package->get_type() && ! current_user_can( 'install_plugins' ) ) {
-			$status['message'] = esc_html__( 'Sorry, you are not allowed to install plugins on this site.' );
+			$status['message'] = esc_html__( 'Sorry, you are not allowed to install plugins on this site.', 'audiotheme-agent' );
 			wp_send_json_error( $status );
 		} elseif ( 'theme' === $package->get_type() && ! current_user_can( 'install_themes' ) ) {
-			$status['message'] = esc_html__( 'Sorry, you are not allowed to install themes on this site.' );
+			$status['message'] = esc_html__( 'Sorry, you are not allowed to install themes on this site.', 'audiotheme-agent' );
 			wp_send_json_error( $status );
 		}
 
@@ -146,7 +146,7 @@ class AudioTheme_Agent_Provider_AJAX extends AudioTheme_Agent_AbstractProvider {
 		check_ajax_referer( 'create-child-theme_' . $slug, 'nonce' );
 
 		if ( ! current_user_can( 'install_themes' ) ) {
-			$status['message'] = esc_html__( 'Sorry, you are not allowed to install themes on this site.' );
+			$status['message'] = esc_html__( 'Sorry, you are not allowed to install themes on this site.', 'audiotheme-agent' );
 			wp_send_json_error( $status );
 		}
 

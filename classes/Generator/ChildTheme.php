@@ -48,7 +48,7 @@ class AudioTheme_Agent_Generator_ChildTheme {
 		$parent = wp_get_theme( $this->template );
 
 		if ( ! $parent->exists() ) {
-			return new WP_Error( 'invalid_template', esc_html__( 'Invalid parent theme slug.' ) );
+			return new WP_Error( 'invalid_template', esc_html__( 'Invalid parent theme slug.', 'audiotheme-agent' ) );
 		}
 
 		$parts     = explode( '/', $parent->get_template() );
@@ -56,7 +56,7 @@ class AudioTheme_Agent_Generator_ChildTheme {
 		$directory = path_join( $parent->get_theme_root(), $slug );
 
 		if ( false === $wp_filesystem->mkdir( $directory ) ) {
-			return new WP_Error( 'fs_error', esc_html__( 'Could not create child theme directory.' ) );
+			return new WP_Error( 'fs_error', esc_html__( 'Could not create child theme directory.', 'audiotheme-agent' ) );
 		}
 
 		$source = audiotheme_agent()->get_path( 'data/child-theme/' );
