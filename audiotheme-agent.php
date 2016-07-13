@@ -112,6 +112,7 @@ if ( is_admin() ) {
 		->register_hooks( new AudioTheme_Agent_Provider_I18n() )
 		->register_hooks( new AudioTheme_Agent_Provider_AJAX() )
 		->register_hooks( new AudioTheme_Agent_Screen_Main_Subscriptions() )
+		->register_hooks( new AudioTheme_Agent_Screen_Main_Support() )
 		->register_hooks( new AudioTheme_Agent_Provider_AudioThemeCompatibility() );
 }
 

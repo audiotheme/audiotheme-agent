@@ -1,13 +1,55 @@
 /* General
--------------------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .wrap h2.nav-tab-wrapper {
 	margin-bottom: 10px;
 }
 
 
+/* Screen
+----------------------------------------------------------------------------- */
+
+.audiotheme-agent-screen {
+	padding-right: 300px;
+}
+
+.audiotheme-agent-screen:after {
+	clear: both;
+	content: "";
+	display: block;
+}
+
+.audiotheme-agent-screen > * {
+	box-sizing: border-box;
+}
+
+.audiotheme-agent-screen-primary {
+	float: left;
+	width: 100%;
+}
+
+.audiotheme-agent-screen-secondary {
+	float: right;
+	margin-right: -300px;
+	width: 280px;
+}
+
+@media (max-width: 782px) {
+	.audiotheme-agent-screen {
+		padding: 0;
+	}
+
+	.audiotheme-agent-screen-primary,
+	.audiotheme-agent-screen-secondary {
+		float: none;
+		margin-right: 0;
+		width: auto;
+	}
+}
+
+
 /* Panel
--------------------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .audiotheme-agent-panel {
 	background: #fff;
@@ -66,7 +108,7 @@
 
 
 /* Tables
--------------------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .audiotheme-agent-table tbody td.column-action {
 	text-align: right;
@@ -79,7 +121,7 @@
 
 
 /* Products Table
--------------------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .audiotheme-agent-packages caption {
 	color: #23282d;
@@ -129,7 +171,7 @@
 
 
 /* Subscriptions Table
--------------------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .audiotheme-agent-subscriptions td,
 .audiotheme-agent-subscriptions th {
@@ -174,7 +216,7 @@
 
 
 /* Help Tab
--------------------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .audiotheme-agent-help-table {
 	margin: 1em 0;
@@ -187,7 +229,7 @@
 
 
 /* Dropdown Group
--------------------------------------------------------------- */
+----------------------------------------------------------------------------- */
 
 .audiotheme-agent-dropdown-group {
 	display: inline-flex;

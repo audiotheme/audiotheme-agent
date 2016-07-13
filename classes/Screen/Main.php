@@ -109,7 +109,7 @@ class AudioTheme_Agent_Screen_Main extends AudioTheme_Agent_AbstractProvider {
 				'is_active' => 'default' === $this->get_current_tab_id(),
 			),
 			'support' => array(
-				'label'     => esc_html__( 'Support', 'audiotheme-agent' ),
+				'label'     => esc_html__( 'Help', 'audiotheme-agent' ),
 				'url'       => self_admin_url( 'index.php?page=audiotheme-agent&tab=support' ),
 				'is_active' => 'support' === $this->get_current_tab_id(),
 			),

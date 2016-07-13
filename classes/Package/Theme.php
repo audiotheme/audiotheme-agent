@@ -187,7 +187,7 @@ class AudioTheme_Agent_Package_Theme extends AudioTheme_Agent_Package_AbstractPa
 		if ( is_multisite() ) {
 			$url = network_admin_url( 'theme-editor.php' );
 		} else {
-			$url = self_admin_url( 'theme-editor.ph' );
+			$url = self_admin_url( 'theme-editor.php' );
 		}
 
 		return add_query_arg( $args, $url );

@@ -1,5 +1,3 @@
-<h2><?php esc_html_e( 'Subscriptions', 'audiotheme-agent' ); ?></h2>
-
 <?php
 if ( $client->has_identity_crisis() ) {
 	printf(
@@ -9,6 +7,8 @@ if ( $client->has_identity_crisis() ) {
 	);
 }
 ?>
+
+<h2><?php esc_html_e( 'Subscriptions', 'audiotheme-agent' ); ?></h2>
 
 <table class="audiotheme-agent-subscriptions audiotheme-agent-table widefat striped">
 	<thead>
