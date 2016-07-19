@@ -55,6 +55,10 @@ class AudioTheme_Agent_Generator_ChildTheme {
 		$slug      = sprintf( '%s-child', reset( $parts ) );
 		$directory = path_join( $parent->get_theme_root(), $slug );
 
+		if ( $wp_filesystem->exists( $directory ) ) {
+			return new WP_Error( 'directory_exists', esc_html__( 'Child theme directory already exists.', 'audiotheme-agent' ) );
+		}
+
 		if ( false === $wp_filesystem->mkdir( $directory ) ) {
 			return new WP_Error( 'fs_error', esc_html__( 'Could not create child theme directory.', 'audiotheme-agent' ) );
 		}
