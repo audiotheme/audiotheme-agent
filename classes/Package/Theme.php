@@ -87,7 +87,7 @@ class AudioTheme_Agent_Package_Theme extends AudioTheme_Agent_Package_AbstractPa
 				<div class="audiotheme-agent-dropdown-group-items">
 					<ul>
 						<li><a href="<?php echo esc_url( sprintf( 'https://audiotheme.com/support/%s/', $this->get_slug() ) ); ?>" target="_blank"><?php esc_html_e( 'View Documentation', 'audiotheme-agent' ); ?></a></li>
-						<li><a href="<?php echo esc_url( sprintf( 'https://audiotheme.com/view/%s/changelog/', $this->get_slug() ) ); ?>" target="_blank"><?php esc_html_e( 'View Changelog', 'audiotheme-agent' ); ?></a></li>
+						<li><a href="<?php echo esc_url( $this->get_changelog_url() ); ?>" target="_blank"><?php esc_html_e( 'View Changelog', 'audiotheme-agent' ); ?></a></li>
 
 						<?php if ( ! $this->child_exists() && current_user_can( 'install_themes' ) ) : ?>
 							<li>
