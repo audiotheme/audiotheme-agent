@@ -214,7 +214,11 @@
 
 			e.preventDefault();
 
-			$column.find( '.button' ).first().text( 'Creating child theme...' );
+			$column.find( '.button' ).first()
+				.prop( 'disabled', true )
+				.addClass( 'button-disabled' )
+				.text( 'Creating child theme...' );
+
 			$column.prepend( this.$spinner.addClass( 'is-active' ) );
 
 			this.controller.createChildTheme( this.model.get( 'slug' ) )
