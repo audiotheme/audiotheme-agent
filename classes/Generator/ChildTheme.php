@@ -68,7 +68,7 @@ class AudioTheme_Agent_Generator_ChildTheme {
 
 		if ( $parent->get_screenshot() ) {
 			$wp_filesystem->copy(
-				$parent->get_screenshot(),
+				path_join( $parent->get_template_directory(), $parent->get_screenshot( 'relative' ) ),
 				path_join( $directory, $parent->get_screenshot( 'relative' ) )
 			);
 		}
