@@ -229,6 +229,32 @@ class AudioTheme_Agent_PackageManager {
 	}
 
 	/**
+	 * Whether a plugin is managed.
+	 *
+	 * @since 1.1.2
+	 *
+	 * @param  string  $slug Plugin slug.
+	 * @return boolean
+	 */
+	public function is_managed_plugin( $slug ) {
+		$plugins = $this->get_installed_plugins();
+		return isset( $plugins[ $slug ] );
+	}
+
+	/**
+	 * Whether a theme is managed.
+	 *
+	 * @since 1.1.2
+	 *
+	 * @param  string  $slug Theme slug.
+	 * @return boolean
+	 */
+	public function is_managed_theme( $slug ) {
+		$themes = $this->get_installed_themes();
+		return isset( $themes[ $slug ] );
+	}
+
+	/**
 	 * Flush the cache.
 	 *
 	 * @since 1.0.0

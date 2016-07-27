@@ -28,14 +28,13 @@ class AudioTheme_Agent_Provider_UpdateManager extends AudioTheme_Agent_AbstractP
 		add_filter( 'plugins_api',                           array( $this, 'filter_plugins_api' ), 5, 3 );
 		add_filter( 'http_request_args',                     array( $this, 'filter_wporg_update_check' ), 5, 2 );
 
-		/*add_action( 'in_theme_update_message-americanaura', function( $theme, $r ) {
-			echo 'Message';
-		}, 10, 2 );
-
-		add_filter( 'wp_prepare_themes_for_js', function( $themes ) {
-			$themes['americanaura']['update'] .= '<p>Message</p>';
-			return $themes;
-		} );*/
+		// Display a blurb about connecting alongside default updates messages
+		// throughout various screens in the admin panel.
+		if ( ! $this->plugin->client->is_authorized() ) {
+			add_action( 'load-plugins.php',         array( $this, 'register_plugin_update_message_hooks' ) );
+			add_filter( 'wp_prepare_themes_for_js', array( $this, 'filter_theme_update_messages' ) );
+			add_filter( 'upgrader_pre_download',    array( $this, 'filter_missing_package_reply' ), 10, 3 );
+		}
 	}
 
 	/**
@@ -286,5 +285,115 @@ class AudioTheme_Agent_Provider_UpdateManager extends AudioTheme_Agent_AbstractP
 		$r['body'][ $api_type ] = '1.0' === $api_version ? serialize( $entities ) : wp_json_encode( $entities );
 
 		return $r;
+	}
+
+	/**
+	 * Register plugin update hooks.
+	 *
+	 * @since 1.1.2
+	 */
+	public function register_plugin_update_message_hooks() {
+		$plugins = $this->plugin->packages->get_installed_plugins();
+
+		foreach ( $plugins as $slug => $plugin ) {
+			add_action( 'in_plugin_update_message-' . $plugin['file'], array( $this, 'print_plugin_update_message' ), 10, 2 );
+		}
+	}
+
+	/**
+	 * Print a message in the plugin row on the main Plugins screen if the
+	 * package URL is missing for a managed plugin.
+	 *
+	 * @since 1.1.2
+	 *
+	 * @param array $plugin_data Array of plugin data.
+	 * @param array $r           An array of metadata about the available plugin update.
+	 */
+	public function print_plugin_update_message( $plugin_data, $r ) {
+		if ( empty( $r->package ) ) {
+			printf( '<br><br><strong>%s</strong>', $this->get_missing_package_message( 'plugin' ) );
+		}
+	}
+
+	/**
+	 * Filter the update message for managed themes.
+	 *
+	 * This displays in the theme modals on the main Themes screen.
+	 *
+	 * @since 1.1.2
+	 *
+	 * @param  array $themes Array of theme info.
+	 * @return array
+	 */
+	public function filter_theme_update_messages( $themes ) {
+		foreach ( $themes as $slug => $theme ) {
+			if ( $theme['hasUpdate'] && $this->plugin->packages->is_managed_theme( $slug ) ) {
+				// Strip the message about automatic update not being available.
+				$themes[ $slug ]['update']  = preg_replace( '/ <em>[^<]+<\/em>/', '', $themes[ $slug ]['update'] );
+
+				$themes[ $slug ]['update'] .= sprintf(
+					'<p><strong><em>%s</em></strong></p>',
+					$this->get_missing_package_message( 'theme' )
+				);
+			}
+		}
+
+		return $themes;
+	}
+
+	/**
+	 * Filter the message displayed when a package URL is missing during bulk update.
+	 *
+	 * @since 1.1.2
+	 *
+	 * @param bool        $reply    Whether to bail without returning the package.
+	 *                              Default false.
+	 * @param string      $package  The package file name.
+	 * @param WP_Upgrader $upgrader The WP_Upgrader instance.
+	 */
+	public function filter_missing_package_reply( $reply, $package, $upgrader ) {
+		// Bail if a package is available.
+		if ( ! empty( $package ) ) {
+			return $reply;
+		}
+
+		// These should check with the package manager to see if the package is
+		// managed, but the upgrader makes it difficult to get the plugin slug,
+		// so the author header is being used for simplicity.
+		$is_managed_plugin = isset( $upgrader->skin->plugin_info ) && 'AudioTheme' === $upgrader->skin->plugin_info['Author'];
+		$is_managed_theme  = isset( $upgrader->skin->theme_info ) && $this->plugin->packages->is_managed_theme( $upgrader->skin->theme_info->get_stylesheet() );
+
+		// Bail if this isn't a managed package.
+		if ( ! $is_managed_plugin && ! $is_managed_theme ) {
+			return $reply;
+		}
+
+		$message = $this->get_missing_package_message( $is_managed_plugin ? 'plugin' : 'theme' );
+		return new WP_Error( 'no_package', $message );
+	}
+
+	/**
+	 * Retrieve a message about connecting to receive automatic updates when a
+	 * package URL is missing.
+	 *
+	 * @since 1.1.2
+	 *
+	 * @param  string $type Package type.
+	 * @return string
+	 */
+	protected function get_missing_package_message( $type ) {
+		if ( 'plugin' === $type ) {
+			$message = sprintf(
+				__( 'Connect the AudioTheme Agent to receive automatic updates for this plugin. <a href="%s" target="_top">Connect now</a>.', 'audiotheme-agent' ),
+				esc_url( self_admin_url( 'index.php?page=audiotheme-agent' ) )
+			);
+		} elseif ( 'theme' === $type ) {
+			$message = sprintf(
+				__( 'Connect the AudioTheme Agent to receive automatic updates for this theme. <a href="%s" target="_top">Connect now</a>.', 'audiotheme-agent' ),
+				esc_url( self_admin_url( 'index.php?page=audiotheme-agent' ) )
+			);
+		}
+
+		return wp_kses( $message, array( 'a' => array( 'href' => true, 'target' => true ) ) );
 	}
 }
