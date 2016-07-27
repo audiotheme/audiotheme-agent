@@ -19,12 +19,9 @@
 					</p>
 					<p>
 						<?php
-						printf(
-							wp_kses(
-								__( 'Please <a href="https://audiotheme.com/support/audiotheme-agent/" target="_blank">connect your site</a> to receive automatic updates and support. After connecting, you can send priority support requests directly from this screen.', 'audiotheme-agent' ),
-								array( 'a' => array( 'href' => true, 'target' => true ) )
-							),
-							'https://audiotheme.com/account/'
+						echo wp_kses(
+							__( 'Please <a href="https://audiotheme.com/support/audiotheme-agent/" target="_blank">connect your site</a> to receive automatic updates and support. After connecting, you can send priority support requests directly from this screen.', 'audiotheme-agent' ),
+							array( 'a' => array( 'href' => true, 'target' => true ) )
 						);
 						?>
 					</p>
