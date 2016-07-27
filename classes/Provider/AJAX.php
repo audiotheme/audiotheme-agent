@@ -66,8 +66,12 @@ class AudioTheme_Agent_Provider_AJAX extends AudioTheme_Agent_AbstractProvider {
 			) );
 		}
 
+		delete_site_transient( 'update_plugins' );
+		delete_site_transient( 'update_themes' );
+		$packages = $this->plugin->packages->flush()->prepare_packages_for_js();
+
 		wp_send_json_success( array(
-			'packages'      => $this->plugin->packages->flush()->prepare_packages_for_js(),
+			'packages'      => $packages,
 			'subscriptions' => $subscriptions
 		) );
 	}
@@ -93,8 +97,12 @@ class AudioTheme_Agent_Provider_AJAX extends AudioTheme_Agent_AbstractProvider {
 			) );
 		}
 
+		delete_site_transient( 'update_plugins' );
+		delete_site_transient( 'update_themes' );
+		$packages = $this->plugin->packages->flush()->prepare_packages_for_js();
+
 		wp_send_json_success( array(
-			'packages' => $this->plugin->packages->flush()->prepare_packages_for_js()
+			'packages' => $packages,
 		) );
 	}
 
