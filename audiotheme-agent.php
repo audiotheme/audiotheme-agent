@@ -10,7 +10,7 @@
  * Plugin Name: AudioTheme Agent
  * Plugin URI:  https://audiotheme.com/
  * Description: Connect to AudioTheme.com to directly install premium themes and plugins, automatically update installed products, manage your subscriptions, and receive priority support.
- * Version:     1.1.1
+ * Version:     1.1.2
  * Author:      AudioTheme
  * Author URI:  https://audiotheme.com/
  * License:     GPL-2.0+
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin version.
  */
-define( 'AUDIOTHEME_AGENT_VERSION', '1.1.1' );
+define( 'AUDIOTHEME_AGENT_VERSION', '1.1.2' );
 
 /**
  * Autoloader callback.
