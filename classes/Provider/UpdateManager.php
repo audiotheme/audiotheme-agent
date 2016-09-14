@@ -327,7 +327,7 @@ class AudioTheme_Agent_Provider_UpdateManager extends AudioTheme_Agent_AbstractP
 	 */
 	public function filter_theme_update_messages( $themes ) {
 		foreach ( $themes as $slug => $theme ) {
-			if ( $theme['hasUpdate'] && $this->plugin->packages->is_managed_theme( $slug ) ) {
+			if ( isset( $theme['hasUpdate'] ) && $theme['hasUpdate'] && $this->plugin->packages->is_managed_theme( $slug ) ) {
 				// Strip the message about automatic update not being available.
 				$themes[ $slug ]['update']  = preg_replace( '/ <em>[^<]+<\/em>/', '', $themes[ $slug ]['update'] );
 
