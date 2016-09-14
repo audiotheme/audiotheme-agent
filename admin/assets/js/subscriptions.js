@@ -332,7 +332,8 @@
 	app.view.TokenGroup = wp.Backbone.View.extend({
 		events: {
 			'click button': 'subscribe',
-			'keyup input': 'toggleButton'
+			'keyup input': 'toggleButton',
+			'change input': 'toggleButton'
 		},
 
 		initialize: function( options ) {
