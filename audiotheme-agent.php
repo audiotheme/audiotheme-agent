@@ -114,6 +114,10 @@ if ( is_admin() ) {
 		->register_hooks( new AudioTheme_Agent_Screen_Main_Subscriptions() )
 		->register_hooks( new AudioTheme_Agent_Screen_Main_Support() )
 		->register_hooks( new AudioTheme_Agent_Provider_AudioThemeCompatibility() );
+
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			$audiotheme_agent->register_hooks( new AudioTheme_Agent_Screen_Main_Logs() );
+		}
 }
 
 /**

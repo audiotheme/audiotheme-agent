@@ -89,7 +89,7 @@ class AudioTheme_Agent_Logger {
 	 *
 	 * @return string
 	 */
-	public function get_log() {
+	public function get_contents() {
 		return file_get_contents( $this->filename );
 	}
 

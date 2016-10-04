@@ -102,7 +102,7 @@ class AudioTheme_Agent_Screen_Main extends AudioTheme_Agent_AbstractProvider {
 	 * @return array
 	 */
 	protected function get_tabs() {
-		return array(
+		$tabs = array(
 			'default' => array(
 				'label'     => esc_html__( 'Subscriptions', 'audiotheme-agent' ),
 				'url'       => self_admin_url( 'index.php?page=audiotheme-agent' ),
@@ -114,6 +114,16 @@ class AudioTheme_Agent_Screen_Main extends AudioTheme_Agent_AbstractProvider {
 				'is_active' => 'support' === $this->get_current_tab_id(),
 			),
 		);
+
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			$tabs['logs'] = array(
+				'label'     => esc_html__( 'Logs', 'audiotheme-agent' ),
+				'url'       => self_admin_url( 'index.php?page=audiotheme-agent&tab=logs' ),
+				'is_active' => 'logs' === $this->get_current_tab_id(),
+			);
+		}
+
+		return $tabs;
 	}
 
 	/**

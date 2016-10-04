@@ -1204,7 +1204,7 @@ class AudioTheme_Agent_Client {
 	/**
 	 * Retrieve the site name.
 	 *
-	 * @since 1.1.3
+	 * @since 1.2.0
 	 *
 	 * @return string
 	 */
