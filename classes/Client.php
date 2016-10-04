@@ -430,7 +430,7 @@ class AudioTheme_Agent_Client {
 			'response_types'             => array(
 				'code',
 			),
-			'client_name'                => esc_html( get_bloginfo( 'name' ) ),
+			'client_name'                => esc_html( $this->get_site_name() ),
 			'client_uri'                 => esc_url_raw( home_url() ),
 			'logo_uri'                   => esc_url_raw( get_site_icon_url() ),
 			'scope'                      => 'read',
@@ -476,7 +476,7 @@ class AudioTheme_Agent_Client {
 		}
 
 		$name = $this->get_registered_metadata( 'client_name' );
-		if ( esc_html( get_bloginfo( 'name' ) ) !== $name ) {
+		if ( esc_html( $this->get_site_name() ) !== $name ) {
 			return true;
 		}
 
@@ -522,7 +522,7 @@ class AudioTheme_Agent_Client {
 
 		// Update dynamic values. These can be overridden in the $args.
 		$metadata['redirect_uris'] = array( $this->get_redirect_uri() );
-		$metadata['client_name']   = esc_html( get_bloginfo( 'name' ) );
+		$metadata['client_name']   = esc_html( $this->get_site_name() );
 		$metadata['client_uri']    = esc_url_raw( home_url() );
 		$metadata['logo_uri']      = esc_url_raw( get_site_icon_url() );
 
@@ -1199,6 +1199,23 @@ class AudioTheme_Agent_Client {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Retrieve the site name.
+	 *
+	 * @since 1.1.3
+	 *
+	 * @return string
+	 */
+	protected function get_site_name() {
+		if ( is_multisite() ) {
+			$name = get_site_option( 'site_name' );
+		} else {
+			$name = get_bloginfo( 'name' ) ;
+		}
+
+		return $name;
 	}
 
 	/**

@@ -62,7 +62,7 @@
 			<tr>
 				<th scope="row"><?php esc_html_e( 'Client Name', 'audiotheme-agent' ); ?></th>
 				<td><?php echo isset( $metadata['client_name'] ) ? esc_html( $metadata['client_name'] ) : ''; ?></td>
-				<td><?php echo esc_html( get_bloginfo( 'name' ) ); ?></td>
+				<td><?php echo esc_html( is_multisite() ? get_site_option( 'site_name' ) : get_bloginfo( 'name' ) ); ?></td>
 			</tr>
 			<tr>
 				<th scope="row"><?php esc_html_e( 'Client URI', 'audiotheme-agent' ); ?></th>
