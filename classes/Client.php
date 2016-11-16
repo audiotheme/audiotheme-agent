@@ -1154,6 +1154,10 @@ class AudioTheme_Agent_Client {
 			return $this->report_error( $token );
 		}
 
+		$this->log( 'notice', 'Authorized the client via the Authorization Code Grant.' );
+
+		do_action( 'audiotheme_agent_authorized_client' );
+
 		return $this->send_to_application();
 	}
 
