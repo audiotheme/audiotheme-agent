@@ -92,6 +92,7 @@ class AudioTheme_Agent_Plugin extends AudioTheme_Agent_AbstractPlugin {
 	 */
 	public function load_plugin() {
 		add_action( 'admin_post_authorize-audiotheme-agent', array( $this->client, 'handle_callback' ) );
+		add_action( 'audiotheme_agent_authorized_client', array( $this, 'flush_package_caches' ) );
 
 		if ( is_admin() ) {
 			add_filter( 'wp_redirect', array( $this, 'filter_redirects' ), 1 );
