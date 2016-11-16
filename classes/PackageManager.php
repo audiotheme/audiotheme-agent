@@ -78,12 +78,16 @@ class AudioTheme_Agent_PackageManager {
 	protected $managed_themes = array(
 		'americanaura',
 		'encore',
+		'hammer',
 		'huesos',
 		'marquee',
+		'merchato',
 		'nowell',
 		'obsidian',
+		'ovation',
 		'promenade',
 		'twotone',
+		'wayfarer',
 	);
 
 	/**
