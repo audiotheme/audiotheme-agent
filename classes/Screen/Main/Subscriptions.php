@@ -162,8 +162,8 @@ class AudioTheme_Agent_Screen_Main_Subscriptions extends AudioTheme_Agent_Screen
 			return;
 		}
 
-		// Flush the packages cache.
-		$this->plugin->packages->flush();
+		// Flush the package caches.
+		$this->plugin->flush_package_caches();
 
 		// Disconnect subscriptions.
 		foreach ( $this->get_subscriptions() as $subscription ) {

@@ -142,4 +142,16 @@ class AudioTheme_Agent_Plugin extends AudioTheme_Agent_AbstractPlugin {
 
 		return $actions;
 	}
+
+	/**
+	 * Flush package caches.
+	 *
+	 * @since 1.3.0
+	 */
+	public function flush_package_caches() {
+		$this->logger->log( 'notice', 'Flushing the package caches.' );
+		delete_site_transient( 'update_plugins' );
+		delete_site_transient( 'update_themes' );
+		$packages = $this->packages->flush()->prepare_packages_for_js();
+	}
 }

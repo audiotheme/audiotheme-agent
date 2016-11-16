@@ -66,6 +66,7 @@ class AudioTheme_Agent_Provider_AJAX extends AudioTheme_Agent_AbstractProvider {
 			) );
 		}
 
+		$this->plugin->logger->log( 'notice', 'Flushing the package caches.' );
 		delete_site_transient( 'update_plugins' );
 		delete_site_transient( 'update_themes' );
 		$packages = $this->plugin->packages->flush()->prepare_packages_for_js();
@@ -97,6 +98,7 @@ class AudioTheme_Agent_Provider_AJAX extends AudioTheme_Agent_AbstractProvider {
 			) );
 		}
 
+		$this->plugin->logger->log( 'notice', 'Flushing the package caches.' );
 		delete_site_transient( 'update_plugins' );
 		delete_site_transient( 'update_themes' );
 		$packages = $this->plugin->packages->flush()->prepare_packages_for_js();
