@@ -32,22 +32,29 @@ if ( $client->has_identity_crisis() ) {
 	<tfoot>
 		<tr>
 			<td colspan="4">
-				<p>
-					<?php
-					printf(
-						wp_kses(
-							__( 'Enter a connection token from your <a href="%s" target="_blank">dashboard on AudioTheme.com</a> to enable automatic updates for this site.', 'audiotheme-agent' ),
-							array( 'a' => array( 'href' => array(), 'target' => array() ) )
-						),
-						'https://audiotheme.com/account/'
-					);
-					?>
-				</p>
-				<p class="audiotheme-agent-subscription-token-group">
-					<input type="text" class="regular-text">
-					<button class="button"><?php esc_html_e( 'Connect', 'audiotheme-agent' ); ?></button>
-					<span class="audiotheme-agent-subscription-token-group-feedback"></span>
-				</p>
+				<?php if ( $client->is_registered() ) : ?>
+					<!-- @todo Consider showing a message about connecting additional subscriptions. -->
+					<p>
+						<a href="<?php echo esc_url( $client->get_authorization_url() ); ?>" class="button button-primary"><?php esc_html_e( 'Connect to AudioTheme.com', 'audiotheme-agent' ); ?></a>
+					</p>
+				<?php else : ?>
+					<p>
+						<?php
+						printf(
+							wp_kses(
+								__( 'Enter a connection token from your <a href="%s" target="_blank">dashboard on AudioTheme.com</a> to enable automatic updates for this site.', 'audiotheme-agent' ),
+								array( 'a' => array( 'href' => array(), 'target' => array() ) )
+							),
+							'https://audiotheme.com/account/'
+						);
+						?>
+					</p>
+					<p class="audiotheme-agent-subscription-token-group">
+						<input type="text" class="regular-text">
+						<button class="button"><?php esc_html_e( 'Connect', 'audiotheme-agent' ); ?></button>
+						<span class="audiotheme-agent-subscription-token-group-feedback"></span>
+					</p>
+				<?php endif; ?>
 			</td>
 		</tr>
 	</tfoot>
