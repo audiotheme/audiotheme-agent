@@ -685,7 +685,7 @@ class AudioTheme_Agent_Client {
 				'response_type' => 'code',
 				'client_id'     => $this->get_client_id(),
 				'redirect_uri'  => $this->get_redirect_uri(),
-				'scope'         => '',
+				'scope'         => 'read edit download_packages',
 				'state'         => wp_create_nonce( 'authorize-client_' . get_current_user_id() ),
 			),
 			$this->get_authorization_endpoint()
