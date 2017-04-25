@@ -81,7 +81,6 @@ class AudioTheme_Agent_PackageManager {
 		'hammer',
 		'huesos',
 		'marquee',
-		'merchato',
 		'nowell',
 		'obsidian',
 		'ovation',
