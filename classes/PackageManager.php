@@ -76,14 +76,14 @@ class AudioTheme_Agent_PackageManager {
 	 * @var array
 	 */
 	protected $managed_themes = array(
-		'americanaura',
 		'encore',
 		'hammer',
-		'huesos',
 		'marquee',
+		'merchato',
 		'nowell',
 		'obsidian',
 		'ovation',
+		'popbelly',
 		'promenade',
 		'twotone',
 		'wayfarer',
@@ -96,6 +96,8 @@ class AudioTheme_Agent_PackageManager {
 	 * @var array
 	 */
 	protected $retired = array(
+		'americanaura',
+		'huesos',
 		'shaken-encore',
 	);
 
