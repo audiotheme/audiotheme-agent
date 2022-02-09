@@ -269,7 +269,10 @@ class AudioTheme_Agent_Provider_UpdateManager extends AudioTheme_Agent_AbstractP
 
 			foreach ( $this->plugin->packages->get_installed_plugins() as $plugin ) {
 				unset( $entities['plugins'][ $plugin['file'] ] );
-				unset( $entities['active'][ array_search( $plugin['file'], $entities['active'] ) ] );
+
+				if ( ! empty( $entities['active'] ) ) {
+					unset( $entities['active'][ array_search( $plugin['file'], $entities['active'] ) ] );
+				}
 			}
 
 			// Cast back to an object.
