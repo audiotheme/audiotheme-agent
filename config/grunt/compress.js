@@ -19,6 +19,7 @@ module.exports = {
 					'!composer.*',
 					'!Gruntfile.js',
 					'!package.json',
+					'!package-lock.json',
 					'!phpcs.log',
 					'!phpcs.xml',
 					'!phpunit.xml',
