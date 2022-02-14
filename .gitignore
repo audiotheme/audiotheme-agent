@@ -3,5 +3,6 @@ coverage/
 dist/
 languages/audiotheme-agent.pot
 node_modules/
+package-lock.json
 phpcs.log
 vendor/
