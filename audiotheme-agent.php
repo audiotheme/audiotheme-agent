@@ -7,17 +7,18 @@
  * @license   GPL-2.0+
  *
  * @wordpress-plugin
- * Plugin Name: AudioTheme Agent
- * Plugin URI:  https://audiotheme.com/
- * Description: Connect to AudioTheme.com to directly install premium themes and plugins, automatically update installed products, manage your subscriptions, and receive priority support.
- * Version:     1.3.1
- * Author:      AudioTheme
- * Author URI:  https://audiotheme.com/
- * License:     GPL-2.0+
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: audiotheme-agent
- * Domain Path: /languages
- * Network:     true
+ * Plugin Name:  AudioTheme Agent
+ * Plugin URI:   https://audiotheme.com/
+ * Description:  Connect to AudioTheme.com to directly install premium themes and plugins, automatically update installed products, manage your subscriptions, and receive priority support.
+ * Version:      1.3.1
+ * Author:       AudioTheme
+ * Author URI:   https://audiotheme.com/
+ * License:      GPL-2.0+
+ * License URI:  http://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:  audiotheme-agent
+ * Domain Path:  /languages
+ * Requires PHP: 8.0
+ * Network:      true
  */
 
 // Exit if accessed directly.
