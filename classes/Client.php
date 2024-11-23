@@ -1173,7 +1173,7 @@ class AudioTheme_Agent_Client {
 		$url = $this->get_application_url( array(
 			'error'             => $error->get_error_code(),
 			'error_description' => urlencode( $error->get_error_message() ),
-			'error_uri'         => urlencode( $error->get_error_data( 'error_uri' ) ),
+			'error_uri'         => urlencode( $error->get_error_data( 'error_uri' ) ?? '' ),
 		) );
 
 		wp_safe_redirect( $url );
